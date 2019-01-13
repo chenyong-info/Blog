@@ -1,0 +1,869 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="架构,IT,公司组织,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;一家公司的组织架构，能够维持单纯状态的时间大概也就初创的那么1-2年，这之后要么公司倒闭，要么业务扩展最终养活自己。相伴而生必然带来公司内部新势力的崛起，这时候“部门”之于CEO、就像是诸侯之于周天子，是一种维持公司各方势力、凝聚一致对外的工具。公司要想活下去就要不断的适应市场、而随着业务的转变也就带来了组织架构的不断变更调整，最近的例子像是2天前的">
+<meta name="keywords" content="架构,IT,公司组织">
+<meta property="og:type" content="article">
+<meta property="og:title" content="公司组织架构对IT架构的影响">
+<meta property="og:url" content="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;一家公司的组织架构，能够维持单纯状态的时间大概也就初创的那么1-2年，这之后要么公司倒闭，要么业务扩展最终养活自己。相伴而生必然带来公司内部新势力的崛起，这时候“部门”之于CEO、就像是诸侯之于周天子，是一种维持公司各方势力、凝聚一致对外的工具。公司要想活下去就要不断的适应市场、而随着业务的转变也就带来了组织架构的不断变更调整，最近的例子像是2天前的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/0.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/2.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/3.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/1.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/4.jpg">
+<meta property="og:updated_time" content="2018-12-12T14:41:43.188Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="公司组织架构对IT架构的影响">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;一家公司的组织架构，能够维持单纯状态的时间大概也就初创的那么1-2年，这之后要么公司倒闭，要么业务扩展最终养活自己。相伴而生必然带来公司内部新势力的崛起，这时候“部门”之于CEO、就像是诸侯之于周天子，是一种维持公司各方势力、凝聚一致对外的工具。公司要想活下去就要不断的适应市场、而随着业务的转变也就带来了组织架构的不断变更调整，最近的例子像是2天前的">
+<meta name="twitter:image" content="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/">
+
+
+
+
+
+  <title> 公司组织架构对IT架构的影响 | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Saubcy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                公司组织架构对IT架构的影响
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-15T11:18:03+08:00">
+                2018-09-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术杂谈/" itemprop="url" rel="index">
+                    <span itemprop="name">技术杂谈</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/09/15/it-architecture-affect-by-organization/" class="leancloud_visitors" data-flag-title="公司组织架构对IT架构的影响">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <center><img src="/2018/09/15/it-architecture-affect-by-organization/0.jpg" alt="单枪匹马"></center>          
+
+<p>&emsp;&emsp;一家公司的组织架构，能够维持单纯状态的时间大概也就初创的那么1-2年，这之后要么公司倒闭，要么业务扩展最终养活自己。相伴而生必然带来公司内部新势力的崛起，这时候“<strong>部门</strong>”之于CEO、就像是<strong>诸侯之于周天子</strong>，是一种维持公司各方势力、凝聚一致对外的工具。公司要想活下去就要不断的适应市场、而随着业务的转变也就带来了组织架构的不断变更调整，最近的例子像是2天前的<a href="http://www.eeo.com.cn/2018/0913/336987.shtml" title="雷军内部信" target="_blank" rel="noopener">雷军内部信</a></p>
+<p>&emsp;&emsp;工作十几年、看着国家企业信息化喊了十几年，期间即待过项目外包型公司——<strong>给传统企业做IT项目</strong>，也待过产品型公司——<strong>直接面向互联网C端用户</strong>，还待过业务型公司——<strong>传统行业的IT支持部门</strong>，甚至自己创过业……</p>
+<a id="more"></a>
+<p>&emsp;&emsp;除开创业那阵业务线简单、怎么快怎么来以外，其他所有公司都会有一个叫做“<strong>基础研发部</strong>”，或其他类似名字的部门，职能范围大体上包含：             </p>
+<ul>
+<li><strong>统一公司底层IT技术架构</strong>：这样出现项目进度紧张、人力缺乏的时候也好做人员间的互调；</li>
+<li><strong>提供基础服务</strong>：把一些公共的业务逻辑抽象剥离出来，做成公共服务来提供，减少二次开发的人力成本浪费；</li>
+<li><strong>探索新技术新方向</strong>：对市场上的热点新技术进行探索、进行技术储备。</li>
+</ul>
+<p>&emsp;&emsp;按照这样理想化的设计来看，公司组织架构会是像下面这样的划分：</p>
+<center><img src="/2018/09/15/it-architecture-affect-by-organization/2.jpg" alt="理想架构"></center>   
+
+<p>&emsp;&emsp;整个IT部门被拆分成专注于基础服务开发的“<strong>基础研发部</strong>”和业务线直接对接的业务线团队，事实上这也是目前我所待过的绝大部分公司IT部门组织架构划分方式：<strong>既依托于业务线配备专职团队、再以基础研发作为底层技术支持</strong>。</p>
+<p>&emsp;&emsp;不过别看图上基础研发部的图形占据了大部分面积，但真正掌握着公司优势资源、集中了核心人力的还是各明星业务线的IT小团队，无他、离业务近KPI好考核，自然钱也多，最后往往基础研发部就只能在夹缝中求生存，疲于应付各业务线的定制化底层服务不说，最后还被人说响应不及时、出工不出力，或者更强势一点儿的团队干脆就脱离了基础研发部的依赖，直接拉出来单干，也就是实际上的架构演变成了下面的样子：</p>
+<center><img src="/2018/09/15/it-architecture-affect-by-organization/3.jpg" alt="实际架构"></center>  
+
+<p>&emsp;&emsp;基础研发部被架空成了一个可有可无的部门，而各业务线团队则发展成为了一个个独立的庞然大物，一个比较明显的例子就是当你发现同一家公司的APP，其登录账号还不能通用的时候多半就是这种情况了。</p>
+<p>&emsp;&emsp;<strong>所以说一家公司最终采用的IT架构，就是这家公司实际组织架构在现实中的投影</strong>。曾经一度以为，或许只有一个比较强势的IT部门领导，以行政的手段才能破开这种重复建设、严重资源浪费的局面，直到前一阵翻见下面这本书：</p>
+<center><img src="/2018/09/15/it-architecture-affect-by-organization/1.jpg" alt="企业IT架构转型之道：阿里巴巴中台战略思想与架构实战"></center> 
+
+<p>&emsp;&emsp;从书中描述来看，至少阿里也是经历过这种基础研发部门尴尬定位的困惑期的，并且当整个公司体量上来，到了不得不进行变革的地步，而最终阿里给出的方案是“<strong>大中台、小前台</strong>”，也就是像下面这样：</p>
+<center><img src="/2018/09/15/it-architecture-affect-by-organization/4.jpg" alt="阿里的大中台架构"></center> 
+
+<p>&emsp;&emsp;一个个服务中心是作为公司整体业务重叠部分的一个抽象，比如：用户中心、商品中心等，也就是所谓的“中台”，而上面直接业务支持的IT团队则是基于这些服务中心来做不同的业务流程组合以满足不同的产品需求，相对于那种简单粗暴的“基础研发部”划分来说，阿里的中台划分主要有如下的好处：              </p>
+<ul>
+<li><p><strong>持续活力的保持</strong>：传统的基础研发部划分最大的问题是脱离业务，很多需求更像是自己想象出来、或是业务IT团队消化的二手需求，完成的东西要么是推广难、要么就是任务性质的缺乏激情；服务中心的概念则是把服务当成一个产品来持续运营跟进，更加专注，也就更能给人带来发展的成就感。</p>
+</li>
+<li><p><strong>破解人力短缺</strong>：往往单一的基础研发部承接的底层业务多而杂，很难做出业绩将自己的部门发展壮大，看起来什么都可以做成底层服务，但又缺乏人力进行跟进，从而导致一个恶性循环；服务中心的好处就是将基础部分更加细化，确实复杂、重要的业务就投入更多的人力跟进、否则可以是少量人力。</p>
+</li>
+<li><p><strong>加快业务相应速度</strong>：之前可以看到跟业务更近的团队往往更能发展壮大，重要的一点原因就是业务都需要快速的响应实现速度，而疲于奔命的基础部门响应不过来自然就给业务团队有了自己拉人单干的理由，当这些底层基础服务都有一个快速相应团队来持续推进迭代的话，一个很小的业务团队也可以完成复杂的业务组合，一方面可以保持前端团队的轻量、快速试错，另一方面确实也保证了业务迭代的快速。</p>
+</li>
+</ul>
+<p>&emsp;&emsp;对于阿里的这套方案虽然还没有亲自执行实施过，但至少从书面上来看如果建立起来后是一个可以完成自我循环的生态，不会太依赖于IT领导的个人修养。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/架构/" rel="tag"># 架构</a>
+          
+            <a href="/tags/IT/" rel="tag"># IT</a>
+          
+            <a href="/tags/公司组织/" rel="tag"># 公司组织</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/28/full-disk-by-java-tmp/" rel="next" title="Java程序临时读写目录导致的C盘爆满">
+                <i class="fa fa-chevron-left"></i> Java程序临时读写目录导致的C盘爆满
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/29/lucene-random-results/" rel="prev" title="通过Lucene获取随机结果">
+                通过Lucene获取随机结果 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="Saubcy">
+          <p class="site-author-name" itemprop="name">Saubcy</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Saubcy</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
