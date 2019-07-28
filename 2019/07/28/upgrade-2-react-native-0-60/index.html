@@ -1,0 +1,902 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android,React-Native,Hermes,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="虽说每次大版本升级都是一次煎熬，不过如果落下一次下次就更艰难了，何况这一次还有听起来很NB的Hermes 差异比对修改这次ReactNative很贴心上了Upgrade Helper项目，终于不用再自己去新建一个模版工程来人肉比对差异了。 js端由0.59.x升级上来，js端只需要修改package.json中的包版本，以及.flowconfig .eslintrc.js两个配置文件就好了 And">
+<meta name="keywords" content="Android,React-Native,Hermes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native 0.60升级指南">
+<meta property="og:url" content="http://blog.saubcy.com/2019/07/28/upgrade-2-react-native-0-60/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="虽说每次大版本升级都是一次煎熬，不过如果落下一次下次就更艰难了，何况这一次还有听起来很NB的Hermes 差异比对修改这次ReactNative很贴心上了Upgrade Helper项目，终于不用再自己去新建一个模版工程来人肉比对差异了。 js端由0.59.x升级上来，js端只需要修改package.json中的包版本，以及.flowconfig .eslintrc.js两个配置文件就好了 And">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2019/07/28/upgrade-2-react-native-0-60/1.jpg">
+<meta property="og:updated_time" content="2019-07-28T11:13:19.273Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Native 0.60升级指南">
+<meta name="twitter:description" content="虽说每次大版本升级都是一次煎熬，不过如果落下一次下次就更艰难了，何况这一次还有听起来很NB的Hermes 差异比对修改这次ReactNative很贴心上了Upgrade Helper项目，终于不用再自己去新建一个模版工程来人肉比对差异了。 js端由0.59.x升级上来，js端只需要修改package.json中的包版本，以及.flowconfig .eslintrc.js两个配置文件就好了 And">
+<meta name="twitter:image" content="http://blog.saubcy.com/2019/07/28/upgrade-2-react-native-0-60/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2019/07/28/upgrade-2-react-native-0-60/">
+
+
+
+
+
+  <title> React Native 0.60升级指南 | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/07/28/upgrade-2-react-native-0-60/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Saubcy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                React Native 0.60升级指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-28T17:08:06+08:00">
+                2019-07-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/07/28/upgrade-2-react-native-0-60/" class="leancloud_visitors" data-flag-title="React Native 0.60升级指南">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><center><img src="/2019/07/28/upgrade-2-react-native-0-60/1.jpg" alt="Hermes"></center><br>虽说每次大版本升级都是一次煎熬，不过如果落下一次下次就更艰难了，何况这一次还有听起来很NB的Hermes</p>
+<h2 id="差异比对修改"><a href="#差异比对修改" class="headerlink" title="差异比对修改"></a>差异比对修改</h2><p>这次ReactNative很贴心上了<a href="https://react-native-community.github.io/upgrade-helper/?from=0.59.9&amp;to=0.60.4" target="_blank" rel="noopener">Upgrade Helper</a>项目，终于不用再自己去新建一个模版工程来人肉比对差异了。</p>
+<h3 id="js端"><a href="#js端" class="headerlink" title="js端"></a>js端</h3><p>由0.59.x升级上来，js端只需要修改package.json中的包版本，以及.flowconfig .eslintrc.js两个配置文件就好了</p>
+<h3 id="Android端"><a href="#Android端" class="headerlink" title="Android端"></a>Android端</h3><p>0.60版本一大特点之一就是引入了<a href="https://github.com/react-native-community/cli/blob/master/docs/autolinking.md" target="_blank" rel="noopener">自动链接</a>，不用再像往常一样执行react-native link或是人肉修改app/build.gradle跟settings.gradle文件</p>
+<ol>
+<li>执行[react-native run-android]，根据提示，使用[react-native unlink xxx]移除之前在文件中链接的库</li>
+<li><p>修改settings.gradle，加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply from: file(&quot;../node_modules/@react-native-community/cli-platform-android/native_modules.gradle&quot;); applyNativeModulesSettingsGradle(settings)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改app/build.gradle，加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply from: file(&quot;../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle&quot;); applyNativeModulesAppBuildGradle(project)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>考虑到这次RN版本升级时间还不长，部分第三方包对自动链接的兼容性不好，可以在项目根目录新建react-native.config.js文件，指定不需要进行自动链接，仍然采取原本手工链接方式的库</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  dependencies: &#123;</span><br><span class="line">    <span class="string">'react-native-navigation'</span>: &#123;</span><br><span class="line">      platforms: &#123;</span><br><span class="line">        android: <span class="literal">null</span>,</span><br><span class="line">        ios: <span class="literal">null</span>,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>原本MainApplication中的库导入被自动生成PacakgeList替代，不过自己实现的Native代码还是需要在后面进行追加。</p>
+</li>
+</ol>
+<p>&emsp;&emsp;除此之外，本次另一重大升级就是加入了AndroidX的支持</p>
+<ol>
+<li><p>在gradle.properties中加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">android.useAndroidX=true</span><br><span class="line">android.enableJetifier=true</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>AndroidStudio中选择ReFactor –&gt; Migrate to AndroidX… 然后根据提示操作，能够自动搞定app/build.gradle中的包引入替换，不过代码中的类import语句就需要自己根据报错来修改了。</p>
+</li>
+</ol>
+<h3 id="iOS端"><a href="#iOS端" class="headerlink" title="iOS端"></a>iOS端</h3><p>因为没有AndroidX升级这档子事，不需要涉及到源码的修改</p>
+<ol>
+<li>清空Libraries目录下库引用</li>
+<li><p>修改Podfile，加入“use_native_modules!”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">target &apos;xxx&apos;  do</span><br><span class="line">  pod xxxx</span><br><span class="line">  ...</span><br><span class="line">  use_native_modules!</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行cd ios; pod install，查看日志确认需要的第三方库是否都有正常引用，没有的话可以检查第三方库ios目录下是否有xxx.podspec文件，如果没有的话可以在Podfile中手工导入</p>
+</li>
+</ol>
+<h3 id="一些第三方库"><a href="#一些第三方库" class="headerlink" title="一些第三方库"></a>一些第三方库</h3><h4 id="react-native-vector-icons"><a href="#react-native-vector-icons" class="headerlink" title="react-native-vector-icons"></a>react-native-vector-icons</h4><p>取决于使用的版本，至少安装目前最新版本来说会提示“Unrecognized font family ‘Material Icons’”</p>
+<ol>
+<li><p>修改Info.plist，加入</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>UIAppFonts<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>AntDesign.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>Entypo.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>EvilIcons.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>Feather.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>FontAwesome.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>FontAwesome5_Brands.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>FontAwesome5_Regular.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>FontAwesome5_Solid.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>Foundation.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>Ionicons.ttf<span class="tag">&lt;/<span class="name">string</span></span></span><br><span class="line">	&lt;string&gt;MaterialCommunityIcons.ttf&lt;/string&gt;</span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>MaterialIcons.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>Octicons.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>SimpleLineIcons.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>Zocial.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改app/build.gradle，在最后加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply from: &quot;../../node_modules/react-native-vector-icons/fonts.gradle&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="react-native-vector-icons-1"><a href="#react-native-vector-icons-1" class="headerlink" title="react-native-vector-icons"></a>react-native-vector-icons</h4><p>修改android/build.gradle，加入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">subprojects &#123; subproject -&gt;</span><br><span class="line">    afterEvaluate &#123;</span><br><span class="line">        if ((subproject.plugins.hasPlugin(&apos;android&apos;) || subproject.plugins.hasPlugin(&apos;android-library&apos;))) &#123;</span><br><span class="line">            android &#123;</span><br><span class="line">                compileSdkVersion rootProject.ext.compileSdkVersion</span><br><span class="line">                buildToolsVersion rootProject.ext.buildToolsVersion</span><br><span class="line">                variantFilter &#123; variant -&gt;</span><br><span class="line">                    def names = variant.flavors*.name</span><br><span class="line">                    // To check for a certain build type, use variant.buildType.name == &quot;&lt;buildType&gt;&quot;</span><br><span class="line">  if (</span><br><span class="line">                    names.contains(&quot;reactNative51&quot;) ||</span><br><span class="line">                            names.contains(&quot;reactNative55&quot;) ||</span><br><span class="line">                            names.contains(&quot;reactNative56&quot;) ||</span><br><span class="line">                            names.contains(&quot;reactNative57&quot;) ||</span><br><span class="line">                            names.contains(&quot;reactNative57WixFork&quot;) ||</span><br><span class="line">                            names.contains(&quot;reactNative57_5&quot;)</span><br><span class="line">                    ) &#123;</span><br><span class="line">                        // Gradle ignores any variants that satisfy the conditions above.</span><br><span class="line">  setIgnore(true)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="开启Hermes"><a href="#开启Hermes" class="headerlink" title="开启Hermes"></a>开启Hermes</h2><p>根据AppStore的协议</p>
+<blockquote>
+<p>3.3.2 — An Application may not itself install or launch other executable code by any means, including without limitation through the use of a plug-in architecture, calling other frameworks, other APIs or otherwise. No interpreted code may be downloaded or used in an Application <strong>except for code that is interpreted and run by Apple’s Documented APIs and built-in interpreter(s)</strong>.</p>
+</blockquote>
+<p>iOS暂时是没什么指望用上Hermes了，Android<a href="https://facebook.github.io/react-native/docs/hermes" target="_blank" rel="noopener">开启</a>比较简单，只需要修改app/build.gradle，然后clean重新编译即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">project.ext.react = [</span><br><span class="line">        entryFile: &quot;index.js&quot;,</span><br><span class="line">        enableHermes: true,  // clean and rebuild if changing</span><br><span class="line">]</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">不过在运行时会遇到</span><br><span class="line">``` cmd</span><br><span class="line">    java.lang.UnsatisfiedLinkError: couldn&apos;t find DSO to load: librealmreact.so caused by: dlopen failed: library &quot;libjsc.so&quot; not found</span><br></pre></td></tr></table></figure></p>
+<p>好吧，<a href="https://github.com/realm/realm-js/issues/2455" target="_blank" rel="noopener">Realm依然需要JavaScriptCore的库</a>，不过至少说是未来的数月已经有计划要迁移，好像除了等也没啥办法了……</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/React-Native/" rel="tag"># React-Native</a>
+          
+            <a href="/tags/Hermes/" rel="tag"># Hermes</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/10/agile-base-control/" rel="next" title="敏捷源于控制">
+                <i class="fa fa-chevron-left"></i> 敏捷源于控制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="Saubcy">
+          <p class="site-author-name" itemprop="name">Saubcy</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">68</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#差异比对修改"><span class="nav-number">1.</span> <span class="nav-text">差异比对修改</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js端"><span class="nav-number">1.1.</span> <span class="nav-text">js端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android端"><span class="nav-number">1.2.</span> <span class="nav-text">Android端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS端"><span class="nav-number">1.3.</span> <span class="nav-text">iOS端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些第三方库"><span class="nav-number">1.4.</span> <span class="nav-text">一些第三方库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#react-native-vector-icons"><span class="nav-number">1.4.1.</span> <span class="nav-text">react-native-vector-icons</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#react-native-vector-icons-1"><span class="nav-number">1.4.2.</span> <span class="nav-text">react-native-vector-icons</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启Hermes"><span class="nav-number">2.</span> <span class="nav-text">开启Hermes</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Saubcy</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
