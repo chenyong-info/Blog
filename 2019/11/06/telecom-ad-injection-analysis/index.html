@@ -91,20 +91,20 @@
 <meta name="keywords" content="网络安全,广告注入">
 <meta property="og:type" content="article">
 <meta property="og:title" content="电信广告注入分析">
-<meta property="og:url" content="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/index.html">
+<meta property="og:url" content="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/index.html">
 <meta property="og:site_name" content="想啥侃啥">
 <meta property="og:description" content="起因 晚上在调试页面的时候抬头一看，简直了…… 本地调试的页面都被电信强行插入了广告，这要是不防着点儿，等到用户手机上还不定以你的名义插进去了什么乱七八糟的东西。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/ad-inject.jpg">
-<meta property="og:image" content="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/network-1.jpg">
-<meta property="og:image" content="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/network-2.jpg">
-<meta property="og:image" content="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/network-3.jpg">
-<meta property="og:image" content="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/nslookup.png">
-<meta property="og:updated_time" content="2019-11-06T15:01:53.802Z">
+<meta property="og:image" content="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/ad-inject.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/network-1.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/network-2.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/network-3.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/nslookup.png">
+<meta property="og:updated_time" content="2019-11-06T22:39:31.139Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="电信广告注入分析">
 <meta name="twitter:description" content="起因 晚上在调试页面的时候抬头一看，简直了…… 本地调试的页面都被电信强行插入了广告，这要是不防着点儿，等到用户手机上还不定以你的名义插进去了什么乱七八糟的东西。">
-<meta name="twitter:image" content="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/ad-inject.jpg">
+<meta name="twitter:image" content="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/ad-inject.jpg">
 
 
 
@@ -132,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/">
+  <link rel="canonical" href="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/">
 
 
 
@@ -287,7 +287,7 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/11/03/telecom-ad-injection-analysis/">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Saubcy">
@@ -323,8 +323,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-03T21:11:39+08:00">
-                2019-11-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-06T22:34:11+08:00">
+                2019-11-06
               </time>
             
 
@@ -363,7 +363,7 @@
 
           
           
-             <span id="/2019/11/03/telecom-ad-injection-analysis/" class="leancloud_visitors" data-flag-title="电信广告注入分析">
+             <span id="/2019/11/06/telecom-ad-injection-analysis/" class="leancloud_visitors" data-flag-title="电信广告注入分析">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -392,24 +392,24 @@
       
 
       
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p><img src="/2019/11/03/telecom-ad-injection-analysis/ad-inject.jpg" alt="广告注入"></p>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p><img src="/2019/11/06/telecom-ad-injection-analysis/ad-inject.jpg" alt="广告注入"></p>
 <p>晚上在调试页面的时候抬头一看，简直了…… 本地调试的页面都被电信强行插入了广告，这要是不防着点儿，等到用户手机上还不定以你的名义插进去了什么乱七八糟的东西。</p>
 <a id="more"></a>
 <h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>想要防住的话首先就是的弄清楚是在什么地方被给注入的，于是点开Network标签</p>
-<p><img src="/2019/11/03/telecom-ad-injection-analysis/network-1.jpg" alt="网络请求"></p>
+<p><img src="/2019/11/06/telecom-ad-injection-analysis/network-1.jpg" alt="网络请求"></p>
 <p>因为页面逻辑比较简单，有问题的请求很容易就能发现，就是从“ad_unified_access”开始的，按说这个请求不会平白无故发起，所以晚上应该还有某个文件被篡改了以便发起这个请求，继续网上翻</p>
-<p><img src="/2019/11/03/telecom-ad-injection-analysis/network-2.jpg" alt="网络请求"></p>
+<p><img src="/2019/11/06/telecom-ad-injection-analysis/network-2.jpg" alt="网络请求"></p>
 <p>看起来这个stat.js就是起点了，这里原有的文件内容被打包封装成了一个新的js文件，在发起原有请求的同时加入了对广告js的请求</p>
-<p><img src="/2019/11/03/telecom-ad-injection-analysis/network-3.jpg" alt="网络请求"></p>
+<p><img src="/2019/11/06/telecom-ad-injection-analysis/network-3.jpg" alt="网络请求"></p>
 <p>而这个<a href="http://pingjs.qq.com/h5/stats.js?v2.0.4" target="_blank" rel="noopener">http://pingjs.qq.com/h5/stats.js?v2.0.4</a>事实上是腾讯统计的代码，首先想到的是DNS劫持，于是找了个在线<a href="https://tool.chinaz.com/nslookup/" target="_blank" rel="noopener">nslookup工具</a></p>
-<p><img src="/2019/11/03/telecom-ad-injection-analysis/nslookup.png" alt="nslookup"></p>
+<p><img src="/2019/11/06/telecom-ad-injection-analysis/nslookup.png" alt="nslookup"></p>
 <p>发现ip并没有什么问题，确实是属于腾讯的机器，看起来使用了更高端的技术，似乎跟<a href="https://www.williamlong.info/archives/4181.html" target="_blank" rel="noopener">防治运营商HTTP劫持的终极技术手段</a>里描述的比较接近</p>
 <blockquote>
 <p>在用户的浏览器连上被访问的网站服务器，发送了HTTP请求后，运营商的路由器会首先收到此次HTTP请求，之后运营商路由器的旁路设备标记此TCP连接为HTTP协议，之后可以抢在网站服务器返回数据之前发送HTTP协议的302代码进行下载软件的劫持，浏览器收到302代码后就会跳转到错误的软件下载地址下载软件了，随后网站服务器的真正数据到达后反而会被丢弃。或者，旁路设备在标记此TCP连接为HTTP协议后，直接返回修改后的HTML代码，导致浏览器中被插入了运营商的广告，随后网站服务器的真正数据到达后最终也是被丢弃。</p>
 </blockquote>
 <p>所以原理也就比较明显了，电信监控一些常用文件的路径请求，比如说腾讯统计、百度统计这类网站中使用频率比较高的，欺负你不是https请求，进行一定概率的文件内容替换返回，以达到插入非法广告的目的。</p>
 <h1 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h1><p>既然原理清楚了，解决起来也就比较简单了，把对应请求的文件地址换为https即可，查看一下index.html的代码</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width,initial-scale=1.0"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"icon"</span> <span class="attr">href</span>=<span class="string">"&lt;%= BASE_URL %&gt;favicon.ico"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>store<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">noscript</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">strong</span>&gt;</span>We're sorry but store doesn't work properly without JavaScript enabled. Please enable it to continue.<span class="tag">&lt;/<span class="name">strong</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">noscript</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- built files will be auto injected --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"https://res.wx.qq.com/open/js/jweixin-1.4.0.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> _mtac = &#123;&#125;;</span></span><br><span class="line"><span class="javascript">    (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">var</span> mta = <span class="built_in">document</span>.createElement(<span class="string">"script"</span>);</span></span><br><span class="line"><span class="javascript">      mta.src = <span class="string">"//pingjs.qq.com/h5/stats.js?v2.0.4"</span>;</span></span><br><span class="line"><span class="javascript">      mta.setAttribute(<span class="string">"name"</span>, <span class="string">"MTAH5"</span>);</span></span><br><span class="line"><span class="javascript">      mta.setAttribute(<span class="string">"sid"</span>, <span class="string">"000000000"</span>);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">var</span> s = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"script"</span>)[<span class="number">0</span>];</span></span><br><span class="line"><span class="undefined">      s.parentNode.insertBefore(mta, s);</span></span><br><span class="line"><span class="undefined">    &#125;)();</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width,initial-scale=1.0"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"icon"</span> <span class="attr">href</span>=<span class="string">"&lt;%= BASE_URL %&gt;favicon.ico"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>store<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">noscript</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">strong</span>&gt;</span>We're sorry but store doesn't work properly without JavaScript enabled. Please enable it to continue.<span class="tag">&lt;/<span class="name">strong</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">noscript</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- built files will be auto injected --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"https://res.wx.qq.com/open/js/jweixin-1.4.0.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">    var _mtac = &#123;&#125;;</span></span><br><span class="line"><span class="undefined">    (function() &#123;</span></span><br><span class="line"><span class="undefined">      var mta = document.createElement("script");</span></span><br><span class="line"><span class="undefined">      mta.src = "//pingjs.qq.com/h5/stats.js?v2.0.4";</span></span><br><span class="line"><span class="undefined">      mta.setAttribute("name", "MTAH5");</span></span><br><span class="line"><span class="undefined">      mta.setAttribute("sid", "000000000");</span></span><br><span class="line"><span class="undefined">      var s = document.getElementsByTagName("script")[0];</span></span><br><span class="line"><span class="undefined">      s.parentNode.insertBefore(mta, s);</span></span><br><span class="line"><span class="undefined">    &#125;)();</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>对于stat.js的请求并没有指定http或https，这种用法叫做<a href="https://www.paulirish.com/2010/the-protocol-relative-url/" target="_blank" rel="noopener">Protocol-relative URL</a>，简单来说就是使用http还是https来拉取资源文件取决于当前站点所使用的协议，这样可以保持站点所有资源文件请求协议的一致性，避免有的浏览器会提示的http/https内容混用的警告提示，所以，站在腾讯统计的角度上来说，这么提供样例代码确实是合理的。<br>因为生产环境上使用了https的协议，所以也就不会遇到开发环境类似的问题，当然，有强迫症的话这里显式的指定一下使用https来加载就好了。</p>
 
       
@@ -455,8 +455,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/07/vue-cli-proxy-not-work/" rel="next" title="vue-cli3跨域代理不生效">
-                <i class="fa fa-chevron-left"></i> vue-cli3跨域代理不生效
+              <a href="/2019/11/03/devops-with-raspberry-pi/" rel="next" title="用树莓派构建生产发布系统">
+                <i class="fa fa-chevron-left"></i> 用树莓派构建生产发布系统
               </a>
             
           </div>
@@ -464,10 +464,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/11/03/devops-with-raspberry-pi/" rel="prev" title="用树莓派构建生产发布系统">
-                用树莓派构建生产发布系统 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
