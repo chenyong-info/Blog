@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://blog.saubcy.com/2019/01/13/chrome-remote-devices-window-breaks/devtools.jpg">
 <meta property="og:image" content="http://blog.saubcy.com/2019/01/13/chrome-remote-devices-window-breaks/position.jpg">
 <meta property="og:image" content="http://blog.saubcy.com/2019/01/13/chrome-remote-devices-window-breaks/great.jpg">
-<meta property="og:updated_time" content="2019-01-13T07:26:18.004Z">
+<meta property="og:updated_time" content="2019-11-17T08:50:41.733Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chrome远程调试窗口布局混乱">
 <meta name="twitter:description" content="问题&amp;emsp;&amp;emsp;主角是google官网《远程调试 Android 设备使用入门》里提到的Chrome DevTools，别看文章最后更新日期是2018年8月29日，如果你用目前最新的Chrome版本（71.0.3578.98）来操作看到的就是下面这样支离破碎的界面布局：   &amp;emsp;&amp;emsp;最后在Chrome DevTools论坛找到的根源，归结起来就是下面几点：  从Chro">
@@ -407,9 +407,11 @@
 <li>现是通过<a href="https://omahaproxy.appspot.com/history.json?channel=stable&amp;os=mac" target="_blank" rel="noopener">这个列表</a>找到63前最新的版本号：62.0.3202.94</li>
 <li>然后<a href="https://omahaproxy.appspot.com/" target="_blank" rel="noopener">查找</a>得到对应的Branch Base Position：499098<center><img src="/2019/01/13/chrome-remote-devices-window-breaks/position.jpg" alt="position"></center></li>
 <li>最后在Chromium所有打包版本的<a href="http://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html" target="_blank" rel="noopener">镜像站</a>中根据自己的操作系统平台找到最接近的目录（比如Mac是<a href="http://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html?prefix=Mac/499098/" target="_blank" rel="noopener">499098</a>，Win_x64是<a href="http://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html?prefix=Win_x64/499095/" target="_blank" rel="noopener">499095</a>）</li>
-<li>最后的最后，终于界面不再混乱了……<center><img src="/2019/01/13/chrome-remote-devices-window-breaks/great.jpg" alt="great"></center>
+<li>最后的最后，终于界面不再混乱了……<center><img src="/2019/01/13/chrome-remote-devices-window-breaks/great.jpg" alt="great"></center></li>
+<li>最后的最后的最后，如果说还是无法现实可以试试看网络是否无法访问：<a href="https://chrome-devtools-frontend.appspot.com" target="_blank" rel="noopener">https://chrome-devtools-frontend.appspot.com</a><br>正常情况下会返回一段json：<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;'max_age': 604800, 'zip_path': 'zips/%s.zip', 'revision_path': 'revs/%s', 'bucket': '/chrome-devtools-frontend/%s', 'meta_path': 'meta/%s', 'hash_path': 'hash/%s', 'version_path': 'vers/%s'&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
+<p>如果发现无法访问，可以通过<a href="http://ping.chinaz.com/" target="_blank" rel="noopener">Ping检测工具</a>用域名：chrome-devtools-frontend.appspot.com 查找一下可用的ip列表，找一个本地能ping通的配置个hosts就好了。</p>
 
       
     </div>
@@ -538,7 +540,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-count">36</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -560,7 +562,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-count">75</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

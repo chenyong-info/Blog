@@ -1,0 +1,902 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="vue,ssr,nuxt,seo,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="为了更好的享受现代化前端开发框架的乐趣，前一阵把官网给用Vue重写了，开发效率上确实一下子提升了一大截，但是过了一阵用百度一搜，emmm……  对比一下别人家的，虽然不能像百度RMB玩家那样还有站点图标，但好歹描述信息要靠谱点儿把。  总结起来了就是，现在的搜索引擎爬虫对于客户端渲染的站点都不是太友好，没办法获取到ajax拉取回来的动态内容，解决方案嘛就是得把页面的渲染逻辑再拿回服务端，让地址直接">
+<meta name="keywords" content="vue,ssr,nuxt,seo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过Nuxt将Vue项目改造为SSR">
+<meta property="og:url" content="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="为了更好的享受现代化前端开发框架的乐趣，前一阵把官网给用Vue重写了，开发效率上确实一下子提升了一大截，但是过了一阵用百度一搜，emmm……  对比一下别人家的，虽然不能像百度RMB玩家那样还有站点图标，但好歹描述信息要靠谱点儿把。  总结起来了就是，现在的搜索引擎爬虫对于客户端渲染的站点都不是太友好，没办法获取到ajax拉取回来的动态内容，解决方案嘛就是得把页面的渲染逻辑再拿回服务端，让地址直接">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/baidu.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/conan.jpg">
+<meta property="og:updated_time" content="2019-11-17T08:50:41.733Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过Nuxt将Vue项目改造为SSR">
+<meta name="twitter:description" content="为了更好的享受现代化前端开发框架的乐趣，前一阵把官网给用Vue重写了，开发效率上确实一下子提升了一大截，但是过了一阵用百度一搜，emmm……  对比一下别人家的，虽然不能像百度RMB玩家那样还有站点图标，但好歹描述信息要靠谱点儿把。  总结起来了就是，现在的搜索引擎爬虫对于客户端渲染的站点都不是太友好，没办法获取到ajax拉取回来的动态内容，解决方案嘛就是得把页面的渲染逻辑再拿回服务端，让地址直接">
+<meta name="twitter:image" content="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/baidu.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/">
+
+
+
+
+
+  <title> 通过Nuxt将Vue项目改造为SSR | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Saubcy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                通过Nuxt将Vue项目改造为SSR
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-17T14:13:28+08:00">
+                2019-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/" class="leancloud_visitors" data-flag-title="通过Nuxt将Vue项目改造为SSR">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>为了更好的享受现代化前端开发框架的乐趣，前一阵把官网给用Vue重写了，开发效率上确实一下子提升了一大截，但是过了一阵用百度一搜，emmm……</p>
+<p><img src="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/baidu.jpg" alt="百度"></p>
+<p>对比一下别人家的，虽然不能像百度RMB玩家那样还有站点图标，但好歹描述信息要靠谱点儿把。</p>
+<p><img src="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/conan.jpg" alt="名侦探柯南事务所"></p>
+<p>总结起来了就是，现在的搜索引擎爬虫对于客户端渲染的站点都不是太友好，没办法获取到ajax拉取回来的动态内容，解决方案嘛就是得把页面的渲染逻辑再拿回服务端，让地址直接导出的就是最终渲染结果了，在Vue的架构下大致是三种：<br>1、 用插件的形式进行预渲染，比如：<a href="https://github.com/chrisvfritz/prerender-spa-plugin" target="_blank" rel="noopener">prerender-spa-plugin</a>，简单倒是简单，不过最终生成的页面没法儿展示接口获取的动态数据；<br>2、 使用<a href="https://ssr.vuejs.org/zh/guide/#%E5%AE%89%E8%A3%85" target="_blank" rel="noopener">Vue官方的SSR方案</a>，尝试一阵把代码结构改的乱七八糟后，放弃……<br>3、 基于<a href="https://github.com/nuxt/nuxt.js" target="_blank" rel="noopener">NUXTJS的方案</a>，相对来说功能齐备，改造成本最低的一套。</p>
+<a id="more"></a>
+<h1 id="改造步骤"><a href="#改造步骤" class="headerlink" title="改造步骤"></a>改造步骤</h1><h2 id="新建Nuxt工程"><a href="#新建Nuxt工程" class="headerlink" title="新建Nuxt工程"></a>新建Nuxt工程</h2><p>因为nuxt本身有一系列直接的工程目录结构跟配置，所以最省心的方式还是新建工程后再从Vue工程慢慢的蚂蚁搬家过来。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx create-nuxt-app demo</span><br></pre></td></tr></table></figure>
+<p>各种模块根据提示依据自己的需要来选择就好了，就是注意最后的”Choose rendering mode”选择”Universal (SSR)”，完成后的目录结构如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">demo</span><br><span class="line">├── README.md</span><br><span class="line">├── assets</span><br><span class="line">├── components</span><br><span class="line">├── layouts</span><br><span class="line">├── middleware</span><br><span class="line">├── node_modules</span><br><span class="line">├── nuxt.config.js</span><br><span class="line">├── package-lock.json</span><br><span class="line">├── package.json</span><br><span class="line">├── pages</span><br><span class="line">├── plugins</span><br><span class="line">├── server</span><br><span class="line">├── static</span><br><span class="line">└── store</span><br></pre></td></tr></table></figure>
+<p>为了看起来跟Vue跟亲切一些儿，新建src目录，把这assets,components,layouts,middleware,pages,plugins,static,store几个目录都拉进去，调整完如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">demo</span><br><span class="line">├── README.md</span><br><span class="line">├── node_modules</span><br><span class="line">├── nuxt.config.js</span><br><span class="line">├── package-lock.json</span><br><span class="line">├── package.json</span><br><span class="line">├── server</span><br><span class="line">│   └── index.js</span><br><span class="line">└── src</span><br><span class="line">    ├── assets</span><br><span class="line">    ├── components</span><br><span class="line">    ├── layouts</span><br><span class="line">    ├── middleware</span><br><span class="line">    ├── pages</span><br><span class="line">    ├── plugins</span><br><span class="line">    ├── static</span><br><span class="line">    └── store</span><br></pre></td></tr></table></figure>
+<p>然后修改nuxt.config.js，指定源码的目录</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  mode: 'universal',</span><br><span class="line">  srcDir: 'src/',</span><br><span class="line">....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="依赖库迁移（main-js）"><a href="#依赖库迁移（main-js）" class="headerlink" title="依赖库迁移（main.js）"></a>依赖库迁移（main.js）</h2><p>从原有Vue工程的package.json直接复制对应的dependencies跟devDependencies，合并到新工程的package.json中就好了，此外Nuxt的工程中没有了main.js，对应的库引用需要在plugins中进行处理。</p>
+<h3 id="ElementUI"><a href="#ElementUI" class="headerlink" title="ElementUI"></a>ElementUI</h3><p>1、 plugins目录下新建element-ui.js文件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ElementUI</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> Element <span class="keyword">from</span> <span class="string">'element-ui'</span></span><br><span class="line">Vue.use(Element);</span><br></pre></td></tr></table></figure>
+<p>2、 修改nuxt.config.js</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">...</span><br><span class="line">  css: [</span><br><span class="line">	...</span><br><span class="line">    'element-ui/lib/theme-chalk/index.css',</span><br><span class="line">	...</span><br><span class="line">  ],</span><br><span class="line">  ...</span><br><span class="line">  plugins: [</span><br><span class="line">    ...</span><br><span class="line">    '@/plugins/element-ui.js',</span><br><span class="line">    ...</span><br><span class="line">  ],</span><br><span class="line">....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Axios"><a href="#Axios" class="headerlink" title="Axios"></a>Axios</h3><p>1、 安装依赖</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S @nuxtjs/axios</span><br></pre></td></tr></table></figure>
+<p>2、 plugins目录下新建http.js文件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">'axios'</span>;</span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> Conf <span class="keyword">from</span> <span class="string">'@/conf'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// http request 拦截器</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> (<span class="params">&#123; $axios, redirect &#125;</span>) </span>&#123;</span><br><span class="line">  $axios.defaults.timeout = <span class="number">5000</span>;</span><br><span class="line">  $axios.defaults.baseURL = Conf.DEBUG?<span class="string">'http://localhost:9000'</span>:<span class="string">'https://api.demo.com'</span>;</span><br><span class="line"></span><br><span class="line">  $axios.onRequest(<span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 统一添加时间戳</span></span><br><span class="line">    <span class="keyword">if</span>( <span class="string">'get'</span> === config.method)&#123;</span><br><span class="line">      config.params = &#123;</span><br><span class="line">        _t: <span class="built_in">Date</span>.parse(<span class="keyword">new</span> <span class="built_in">Date</span>())/<span class="number">1000</span>,</span><br><span class="line">        ...config.params</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> config;</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>3、 修改nuxt.config.js</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">...</span><br><span class="line">  plugins: [</span><br><span class="line">	...</span><br><span class="line">    '@/plugins/http.js',</span><br><span class="line">    ...</span><br><span class="line">  ],</span><br><span class="line">  ...</span><br><span class="line">  modules: [</span><br><span class="line">    ...</span><br><span class="line">    '@nuxtjs/axios',</span><br><span class="line">	...</span><br><span class="line">  ],</span><br><span class="line">....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>4、 程序中使用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$axios.$get(...);</span><br><span class="line"><span class="keyword">this</span>.$axios.$post(...);</span><br></pre></td></tr></table></figure>
+<h3 id="VueLogger"><a href="#VueLogger" class="headerlink" title="VueLogger"></a>VueLogger</h3><p>1、 plugins目录下新建vuejs-logger.js文件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> Conf <span class="keyword">from</span> <span class="string">'@/conf'</span>;</span><br><span class="line"><span class="keyword">import</span> VueLogger <span class="keyword">from</span> <span class="string">'vuejs-logger'</span>;</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  isEnabled: <span class="literal">true</span>,</span><br><span class="line">  logLevel : Conf.DEBUG ? <span class="string">'debug'</span> : <span class="string">'error'</span>,</span><br><span class="line">  stringifyArguments : <span class="literal">false</span>,</span><br><span class="line">  showLogLevel : <span class="literal">true</span>,</span><br><span class="line">  showMethodName : <span class="literal">true</span>,</span><br><span class="line">  separator: <span class="string">'|'</span>,</span><br><span class="line">  showConsoleColors: <span class="literal">true</span></span><br><span class="line">&#125;;</span><br><span class="line">Vue.use(VueLogger, options);</span><br></pre></td></tr></table></figure>
+<p>2、 修改nuxt.config.js</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">...</span><br><span class="line">  plugins: [</span><br><span class="line">    ...</span><br><span class="line">    '@/plugins/vuejs-logger.js',</span><br><span class="line">    ...</span><br><span class="line">  ],</span><br><span class="line">....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="PostCSS"><a href="#PostCSS" class="headerlink" title="PostCSS"></a>PostCSS</h3><p>1、 修改nuxt.config.js</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">...</span><br><span class="line">  build: &#123;</span><br><span class="line">    postcss: &#123;</span><br><span class="line">      'autoprefixer': &#123;browsers: 'last 5 version'&#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    extend (config, ctx) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="静态文件迁移（public）"><a href="#静态文件迁移（public）" class="headerlink" title="静态文件迁移（public）"></a>静态文件迁移（public）</h2><p>1、 原有public目录下的文件除index.html外全部转移至新工程的src/static下面；<br>2、 在src下新建app.html文件，其中对应nuxt.config.js中的head属性配置，就是要被动态替换的内容，模板如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    &#123;&#123;HEAD&#125;&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    &#123;&#123;APP&#125;&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其他部分可以从index.html中捣腾过来。</p>
+<h2 id="路由迁移（router-js）"><a href="#路由迁移（router-js）" class="headerlink" title="路由迁移（router.js）"></a>路由迁移（router.js）</h2><p>在nuxt中路由会根据pages路径跟文件名自动映射处理，所以这一步的迁移工作就省略掉了</p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>最后运行一下看看效果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
+<h2 id="打包部署"><a href="#打包部署" class="headerlink" title="打包部署"></a>打包部署</h2><p>1、 编译打包（其中generate是生成静态文件部署的打包，这里用不上），成功后项目下会生成.nuxt目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
+<p>2、 修改pacakge.json（原有node方式无法在服务器上正常运行）</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    ...</span><br><span class="line">    "start": "cross-env NODE_ENV=production nuxt start",</span><br><span class="line">    ...</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>3、 将.nuxt目录和package.json文件上传至服务器，并安装依赖包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>4、 编写启动脚本跟重启脚本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>start.sh</span><br><span class="line">BASE_PATH="/servers/demo"</span><br><span class="line">cd $&#123;BASE_PATH&#125;</span><br><span class="line">nohup npm run start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>restart.sh</span><br><span class="line">cd /servers/demo</span><br><span class="line">ps -elf|grep "demo"|grep -v "grep"|grep -v "sh "|awk '&#123;print $4&#125;'|xargs kill -9 </span><br><span class="line">nohup ./start.sh &gt;./log/nohup.out 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<p>5、 配置nginx转发</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">            listen 80;</span><br><span class="line">            server_name demo.com;</span><br><span class="line"></span><br><span class="line">            access_log /logs/demo.log combined;</span><br><span class="line">            error_log /logs/demo_error.log;</span><br><span class="line"></span><br><span class="line">            location / &#123;</span><br><span class="line">                proxy_pass http://127.0.0.1:3000/;</span><br><span class="line">                proxy_set_header X-Real-Ip $remote_addr;</span><br><span class="line">                proxy_set_header Host $http_host;</span><br><span class="line">                proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            error_page  404              /index.html;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+            <a href="/tags/ssr/" rel="tag"># ssr</a>
+          
+            <a href="/tags/nuxt/" rel="tag"># nuxt</a>
+          
+            <a href="/tags/seo/" rel="tag"># seo</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/06/telecom-ad-injection-analysis/" rel="next" title="电信广告注入分析">
+                <i class="fa fa-chevron-left"></i> 电信广告注入分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="Saubcy">
+          <p class="site-author-name" itemprop="name">Saubcy</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#改造步骤"><span class="nav-number">1.</span> <span class="nav-text">改造步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#新建Nuxt工程"><span class="nav-number">1.1.</span> <span class="nav-text">新建Nuxt工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖库迁移（main-js）"><span class="nav-number">1.2.</span> <span class="nav-text">依赖库迁移（main.js）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ElementUI"><span class="nav-number">1.2.1.</span> <span class="nav-text">ElementUI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Axios"><span class="nav-number">1.2.2.</span> <span class="nav-text">Axios</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VueLogger"><span class="nav-number">1.2.3.</span> <span class="nav-text">VueLogger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PostCSS"><span class="nav-number">1.2.4.</span> <span class="nav-text">PostCSS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态文件迁移（public）"><span class="nav-number">1.3.</span> <span class="nav-text">静态文件迁移（public）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路由迁移（router-js）"><span class="nav-number">1.4.</span> <span class="nav-text">路由迁移（router.js）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行"><span class="nav-number">1.5.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打包部署"><span class="nav-number">1.6.</span> <span class="nav-text">打包部署</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Saubcy</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
