@@ -1,0 +1,917 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="GMTC,大前端,TC39,WebAssembly,Serverless,Flutter,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。 关于标准 提到前端就绕不开JavaScript，作为一门语言，与swift, dart, java这些背后站着大公司，有明确Roadmap的语言不一样，js是所谓的委员会语言，背后是一个叫做TC39委员会的组织，或">
+<meta name="keywords" content="GMTC,大前端,TC39,WebAssembly,Serverless,Flutter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从GMTC-2019·深圳，看前端技术趋势">
+<meta property="og:url" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。 关于标准 提到前端就绕不开JavaScript，作为一门语言，与swift, dart, java这些背后站着大公司，有明确Roadmap的语言不一样，js是所谓的委员会语言，背后是一个叫做TC39委员会的组织，或">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/gmtc2019.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/tc39.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/adpater.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/webassembly.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/ipcrs.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/recaptcha.png">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/fe-before-2016.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/fe-2016-2018.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/fe-2018.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/bug.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/nohost.png">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/datahub.png">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/lighthouse.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/mtflutter.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/teams.jpg">
+<meta property="og:updated_time" content="2019-12-28T09:06:38.266Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从GMTC-2019·深圳，看前端技术趋势">
+<meta name="twitter:description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。 关于标准 提到前端就绕不开JavaScript，作为一门语言，与swift, dart, java这些背后站着大公司，有明确Roadmap的语言不一样，js是所谓的委员会语言，背后是一个叫做TC39委员会的组织，或">
+<meta name="twitter:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/gmtc2019.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/">
+
+
+
+
+
+  <title> 从GMTC-2019·深圳，看前端技术趋势 | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Saubcy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                从GMTC-2019·深圳，看前端技术趋势
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-28T14:25:56+08:00">
+                2019-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术分析/" itemprop="url" rel="index">
+                    <span itemprop="name">技术分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/12/28/trends-from-gmtc-2019-shenzhen/" class="leancloud_visitors" data-flag-title="从GMTC-2019·深圳，看前端技术趋势">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/gmtc2019.jpg" alt="gmtc2019"><br>上周末参加完<a href="https://gmtc.infoq.cn/2019/shenzhen/" target="_blank" rel="noopener">GMTC-2019·深圳站</a>，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。</p>
+<h1 id="关于标准"><a href="#关于标准" class="headerlink" title="关于标准"></a>关于标准</h1><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/tc39.jpg" alt="TC39"></p>
+<p>提到前端就绕不开JavaScript，作为一门语言，与swift, dart, java这些背后站着大公司，有明确Roadmap的语言不一样，js是所谓的委员会语言，背后是一个叫做<a href="https://github.com/tc39" target="_blank" rel="noopener">TC39委员会</a>的组织，或许是因为360在今年5月份加入了这个组织，本次的GMTC、前一阵的<a href="http://d2forum.alibaba-inc.com/" target="_blank" rel="noopener">D2</a>都找来了TC39的核心成员<a href="https://github.com/littledan" target="_blank" rel="noopener">Daniel Ehrenberg</a>来介绍TC39的运行机制，就普通开发者来说，最最重要的是弄清楚js的语言新特性怎么添加、怎么使用就好。</p>
+<p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/adpater.jpg" alt="老版本浏览器适配"></p>
+<p>然后就是新特性更新了总不能不管老版本浏览器，这就涉及到Babel, TypeScript, ESLint几大生态对不同Stage阶段取舍的问题，总之如果不爱折腾，对于一个新特性至少等到Stage3了再去了解、尝鲜就好了。</p>
+<h1 id="新成员WebAssembly"><a href="#新成员WebAssembly" class="headerlink" title="新成员WebAssembly"></a>新成员WebAssembly</h1><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/webassembly.jpg" alt="WebAssembly"></p>
+<p>今年的12月5日WebAssembly正式成为W3C标准，这是什么概念咧？就是说后续所有提供浏览器客户端的厂商都必须支持wasm文件，为其提供解析运行的容器，就像今天的浏览器支持HTML/CSS/JS一样自然。</p>
+<p>大家都知道，js代码很大的一个缺陷就是代码逻辑的保护性差，那么遇到一些需要在客户端运行、但是又希望保护代码逻辑的常见大家会怎么做？</p>
+<h2 id="ActiveX"><a href="#ActiveX" class="headerlink" title="ActiveX"></a>ActiveX</h2><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/ipcrs.jpg" alt="个人版征信"></p>
+<p>比如说<a href="https://ipcrs.pbccrc.org.cn/" target="_blank" rel="noopener">个人版人行征信</a>查询，一方面为了保护用户密码在网络传输时的安全性，另一方面也是限制一些无良数据公司赤裸裸的协议层数据爬取，对于用户密码是在本地进行了加密处理的，这里人行采取的方案是ActiveX的方案，也就是需要本地下载安装对应插件，基于微软的COM技术来调取本地DLL模块进行加密逻辑。</p>
+<p>在能有效保证代码逻辑安全性的基础上，缺点也比较明显：</p>
+<ul>
+<li>首先就是对用户使用的干扰大，还需要单独安装软件，甚至重启浏览器。</li>
+<li>另一方面就是挑浏览器、挑操作系统，比如在Mac下就完全没法儿使用，更别提现在很多没有PC，只有手机的用户，基本就跟次功能无缘了。</li>
+</ul>
+<p>所以说这是一种折损大部分体验来换取安全性的折衷方案。</p>
+<h2 id="自实现字节码虚拟机"><a href="#自实现字节码虚拟机" class="headerlink" title="自实现字节码虚拟机"></a>自实现字节码虚拟机</h2><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/recaptcha.png" alt="reCAPTCHA"></p>
+<p>另一个例子是Google的reCAPTCHA服务，Google的实现方案是自己定义一套字节码逻辑，然后用js实现了一个运行这套字节码的VM，其中的部分分析介绍可以参考github上的<a href="https://github.com/toogle/InsideReCaptcha" target="_blank" rel="noopener">InsideReCaptha</a>这个工程。</p>
+<p>相对于ActiveX的方案来说，这种方式在不放弃安全性的基础上体验提升了几个级别，但缺点也是比较明显的，一般公司正常业务开展IT技术、人力都吃紧，更不要说再来实现一套业务无关的VM了。</p>
+<p>而WebAssembly最大的意义在于提供了一套类ActiveX的统一C/C++代码复用运行时环境，这样小公司也能基于一些现有的开源嵌入式js引擎实现自己的VM，具体思路可以参考《<a href="https://www.v2ex.com/t/552383" target="_blank" rel="noopener">前端核心代码保护技术面面观</a>》这篇文章。</p>
+<h1 id="云开发"><a href="#云开发" class="headerlink" title="云开发"></a>云开发</h1><p>要说云开发，就必须先了解一下大厂前端团队的职能发展历程，借用一下阿里跨境供应链的描述，算是相当典型的了：</p>
+<p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/fe-before-2016.jpg" alt="2016年前"></p>
+<p>与移动端同时兴起的是前后端分离的开发模式，为了复用过去大量的内部现有服务接口，同时又要适配新的接入端，通常会在后端服务跟前端页面间加多一个接入层，用来做类似权限控制、报文格式转换、接口逻辑组合这些事情，基本都是一些脏活、累活。</p>
+<p>既然是接口层嘛，也就很自然的被归为了后端团队的活。时间一长，自然后端团队就觉得不开心了，技术没成长不说，还被前端各种使唤；而前端团队幸福感也不高，每次加个新功能都求爷爷、告奶奶，还得给你讲半天业务逻辑，于是双方一拍即合，就演化成了下面的形式：</p>
+<p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/fe-2016-2018.jpg" alt="2016年-2018年"></p>
+<p>原本的接入层被前端接手了过去，因为前端技术栈以js为主，所以这里的实现也从java换行成了node.js。</p>
+<p><em>P.S. 也有部分公司会把部分后端java的人员整体切割给前端团队，这样带来的问题就是团队内部开始出现技术栈的分离，增加了一定的内部管理成本。</em></p>
+<p>但是开心的时间总是过的特别快，随着业务的发展，很快前端就发现自己的人力陷入了另一个黑洞——运维：机器配置要什么样的、环境的初始化、网络权限开通……</p>
+<p>于是，架构就又出现了变化：</p>
+<p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/fe-2018.jpg" alt="2018年-至今"></p>
+<p>这里也就引出了Serverless的概念，对于前端的接入层来说，不再需要关注具体的机器运维、容量评估，只需要专注于自己需要实现的逻辑就好了。</p>
+<p>既然基础架子搭建起来了，自己用是用，卖给别人一块用还能赚点儿外快，所以你会看见<a href="https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html" target="_blank" rel="noopener">微信小程序也支持云开发</a>了，各家云厂商的函数计算也是各种<a href="https://help.aliyun.com/document_detail/54301.html" target="_blank" rel="noopener">优惠</a>骗你上船，在各种后端开发者购买力都被压榨的差不多了后，前端开发者的云服务购买力就像是一座新发掘的金矿。</p>
+<h1 id="开发基础设施"><a href="#开发基础设施" class="headerlink" title="开发基础设施"></a>开发基础设施</h1><p>一切非代码本身的功能支持都可以算作是开发基础设施。</p>
+<h2 id="全链路监控"><a href="#全链路监控" class="headerlink" title="全链路监控"></a>全链路监控</h2><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/bug.jpg" alt="甩锅"></p>
+<p>前端开发最最最重要的技能之一就是甩锅，如何快速、准确定位出现问题的地方也就成了这其中的重中之重。对于全链路日志监控，如果是做后端微服务的小伙伴应该是都比较熟悉了，这次比较打破思维定势的地方在于，原来还可以通过在前端以zipkin协议来埋点上报，借以查看前端api间相互调用关系的方式，算是开眼了。</p>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/nohost.png" alt="Nohost"></p>
+<p>前端在开发过程中很难绕过去的一个问题就是环境，比如多人开发情况下你改了功能A，他改了功能B，都只是想先做一下本地调试再提交代码，但又无法在本地搭建完整的开发环境，这时候就可以使用 <a href="https://github.com/avwo/whistle" target="_blank" rel="noopener">Whistle</a> + <a href="https://www.npmjs.com/package/whistle.nohost" target="_blank" rel="noopener">nohost</a> 来做到随心所欲的环境切换。</p>
+<h2 id="Mock"><a href="#Mock" class="headerlink" title="Mock"></a>Mock</h2><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/datahub.png" alt="Macaca DataHub"></p>
+<p>因为各种数据环境的限制，前端调试自己的问题不能对后端数据产生强依赖，否则就会造成大量空耗，<a href="https://macacajs.github.io/macaca-datahub/zh/" target="_blank" rel="noopener">Macaca DataHub</a>至少看起来是一个不错的可选方案。</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/lighthouse.jpg" alt="LightHouse"></p>
+<p><a href="https://github.com/GoogleChrome/lighthouse-ci" target="_blank" rel="noopener">LightHouse</a>也就是在Chrome下打开开发者工具，Audits面板下的东西，甚至还可以跟CI集成来做自动化测试。</p>
+<h2 id="可视化编程"><a href="#可视化编程" class="headerlink" title="可视化编程"></a>可视化编程</h2><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/mtflutter.jpg" alt="MTFlutter UI代码自动生成"></p>
+<p>美团提供的设计稿到UI代码自动生成的方案，给出了机器学习落地的另一种可能性。</p>
+<h1 id="容器化"><a href="#容器化" class="headerlink" title="容器化"></a>容器化</h1><p><strong>Flutter</strong>绝对算是2019年的前端明星项目，不过在实践中大家更多的还是倾向于只是将其当成一个可选的容器方案来使用，其他像是各家的小程序方案、UC的岳鹰监控方案，国内厂商在容器自己的道路上丝毫没有要减速换道的意思。</p>
+<h1 id="团队建设"><a href="#团队建设" class="headerlink" title="团队建设"></a>团队建设</h1><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/teams.jpg" alt="团队能力"></p>
+<p>就IT行业来说，放弃自身技术更新迭代、走上纯粹的管理路线无异于自杀。但在国内环境的条件之下，要想做纯粹的技术开发也几乎是不可能，所以摆在每一个工作超过3年程序员面前的直接问题就是，如何在保持自身技术更新的情况下，同时还能兼顾着带领各个不同年龄层面团队成员奔着公司业务目标快速前进？</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GMTC/" rel="tag"># GMTC</a>
+          
+            <a href="/tags/大前端/" rel="tag"># 大前端</a>
+          
+            <a href="/tags/TC39/" rel="tag"># TC39</a>
+          
+            <a href="/tags/WebAssembly/" rel="tag"># WebAssembly</a>
+          
+            <a href="/tags/Serverless/" rel="tag"># Serverless</a>
+          
+            <a href="/tags/Flutter/" rel="tag"># Flutter</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/" rel="next" title="通过Nuxt将Vue项目改造为SSR">
+                <i class="fa fa-chevron-left"></i> 通过Nuxt将Vue项目改造为SSR
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="Saubcy">
+          <p class="site-author-name" itemprop="name">Saubcy</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">81</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关于标准"><span class="nav-number">1.</span> <span class="nav-text">关于标准</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新成员WebAssembly"><span class="nav-number">2.</span> <span class="nav-text">新成员WebAssembly</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ActiveX"><span class="nav-number">2.1.</span> <span class="nav-text">ActiveX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自实现字节码虚拟机"><span class="nav-number">2.2.</span> <span class="nav-text">自实现字节码虚拟机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#云开发"><span class="nav-number">3.</span> <span class="nav-text">云开发</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开发基础设施"><span class="nav-number">4.</span> <span class="nav-text">开发基础设施</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全链路监控"><span class="nav-number">4.1.</span> <span class="nav-text">全链路监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">4.2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mock"><span class="nav-number">4.3.</span> <span class="nav-text">Mock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#性能"><span class="nav-number">4.4.</span> <span class="nav-text">性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可视化编程"><span class="nav-number">4.5.</span> <span class="nav-text">可视化编程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器化"><span class="nav-number">5.</span> <span class="nav-text">容器化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#团队建设"><span class="nav-number">6.</span> <span class="nav-text">团队建设</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Saubcy</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

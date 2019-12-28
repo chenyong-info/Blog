@@ -97,7 +97,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/baidu.jpg">
 <meta property="og:image" content="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/conan.jpg">
-<meta property="og:updated_time" content="2019-11-17T08:50:41.733Z">
+<meta property="og:updated_time" content="2019-12-25T14:25:14.139Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过Nuxt将Vue项目改造为SSR">
 <meta name="twitter:description" content="为了更好的享受现代化前端开发框架的乐趣，前一阵把官网给用Vue重写了，开发效率上确实一下子提升了一大截，但是过了一阵用百度一搜，emmm……  对比一下别人家的，虽然不能像百度RMB玩家那样还有站点图标，但好歹描述信息要靠谱点儿把。  总结起来了就是，现在的搜索引擎爬虫对于客户端渲染的站点都不是太友好，没办法获取到ajax拉取回来的动态内容，解决方案嘛就是得把页面的渲染逻辑再拿回服务端，让地址直接">
@@ -400,7 +400,7 @@
 <p>各种模块根据提示依据自己的需要来选择就好了，就是注意最后的”Choose rendering mode”选择”Universal (SSR)”，完成后的目录结构如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">demo</span><br><span class="line">├── README.md</span><br><span class="line">├── assets</span><br><span class="line">├── components</span><br><span class="line">├── layouts</span><br><span class="line">├── middleware</span><br><span class="line">├── node_modules</span><br><span class="line">├── nuxt.config.js</span><br><span class="line">├── package-lock.json</span><br><span class="line">├── package.json</span><br><span class="line">├── pages</span><br><span class="line">├── plugins</span><br><span class="line">├── server</span><br><span class="line">├── static</span><br><span class="line">└── store</span><br></pre></td></tr></table></figure>
 <p>为了看起来跟Vue跟亲切一些儿，新建src目录，把这assets,components,layouts,middleware,pages,plugins,static,store几个目录都拉进去，调整完如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">demo</span><br><span class="line">├── README.md</span><br><span class="line">├── node_modules</span><br><span class="line">├── nuxt.config.js</span><br><span class="line">├── package-lock.json</span><br><span class="line">├── package.json</span><br><span class="line">├── server</span><br><span class="line">│   └── index.js</span><br><span class="line">└── src</span><br><span class="line">    ├── assets</span><br><span class="line">    ├── components</span><br><span class="line">    ├── layouts</span><br><span class="line">    ├── middleware</span><br><span class="line">    ├── pages</span><br><span class="line">    ├── plugins</span><br><span class="line">    ├── static</span><br><span class="line">    └── store</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">demo</span><br><span class="line">├── README.md</span><br><span class="line">├── node_modules</span><br><span class="line">├── nuxt.config.js</span><br><span class="line">├── package-lock.json</span><br><span class="line">├── package.json</span><br><span class="line">├── server</span><br><span class="line">│   └── index.js</span><br><span class="line">└── src</span><br><span class="line">    ├── assets</span><br><span class="line">    ├── components</span><br><span class="line">    ├── layouts</span><br><span class="line">    ├── middleware</span><br><span class="line">    ├── pages</span><br><span class="line">    ├── plugins</span><br><span class="line">    ├── static</span><br><span class="line">    └── store</span><br></pre></td></tr></table></figure>
 <p>然后修改nuxt.config.js，指定源码的目录</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  mode: 'universal',</span><br><span class="line">  srcDir: 'src/',</span><br><span class="line">....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="依赖库迁移（main-js）"><a href="#依赖库迁移（main-js）" class="headerlink" title="依赖库迁移（main.js）"></a>依赖库迁移（main.js）</h2><p>从原有Vue工程的package.json直接复制对应的dependencies跟devDependencies，合并到新工程的package.json中就好了，此外Nuxt的工程中没有了main.js，对应的库引用需要在plugins中进行处理。</p>
@@ -432,10 +432,10 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
 <p>2、 修改pacakge.json（原有node方式无法在服务器上正常运行）</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    ...</span><br><span class="line">    "start": "cross-env NODE_ENV=production nuxt start",</span><br><span class="line">    ...</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>3、 将.nuxt目录和package.json文件上传至服务器，并安装依赖包</p>
+<p>3、 将.nuxt目录、static目录和package.json文件上传至服务器，并安装依赖包</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
 <p>4、 编写启动脚本跟重启脚本</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>start.sh</span><br><span class="line">BASE_PATH="/servers/demo"</span><br><span class="line">cd $&#123;BASE_PATH&#125;</span><br><span class="line">nohup npm run start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>restart.sh</span><br><span class="line">cd /servers/demo</span><br><span class="line">ps -elf|grep "demo"|grep -v "grep"|grep -v "sh "|awk '&#123;print $4&#125;'|xargs kill -9 </span><br><span class="line">nohup ./start.sh &gt;./log/nohup.out 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">start.sh</span></span><br><span class="line">BASE_PATH="/servers/demo"</span><br><span class="line">cd $&#123;BASE_PATH&#125;</span><br><span class="line">nohup npm run start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">restart.sh</span></span><br><span class="line">cd /servers/demo</span><br><span class="line">ps -elf|grep "demo"|grep -v "grep"|grep -v "sh "|awk '&#123;print $4&#125;'|xargs kill -9 </span><br><span class="line">nohup ./start.sh &gt;./log/nohup.out 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
 <p>5、 配置nginx转发</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">            listen 80;</span><br><span class="line">            server_name demo.com;</span><br><span class="line"></span><br><span class="line">            access_log /logs/demo.log combined;</span><br><span class="line">            error_log /logs/demo_error.log;</span><br><span class="line"></span><br><span class="line">            location / &#123;</span><br><span class="line">                proxy_pass http://127.0.0.1:3000/;</span><br><span class="line">                proxy_set_header X-Real-Ip $remote_addr;</span><br><span class="line">                proxy_set_header Host $http_host;</span><br><span class="line">                proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            error_page  404              /index.html;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
@@ -494,6 +494,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/28/trends-from-gmtc-2019-shenzhen/" rel="prev" title="从GMTC-2019·深圳，看前端技术趋势">
+                从GMTC-2019·深圳，看前端技术趋势 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -563,7 +567,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -574,7 +578,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -585,7 +589,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-count">81</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
