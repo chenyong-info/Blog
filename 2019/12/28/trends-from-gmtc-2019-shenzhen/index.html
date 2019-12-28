@@ -87,13 +87,13 @@
 
 
 
-<meta name="description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。 关于标准 提到前端就绕不开JavaScript，作为一门语言，与swift, dart, java这些背后站着大公司，有明确Roadmap的语言不一样，js是所谓的委员会语言，背后是一个叫做TC39委员会的组织，或">
+<meta name="description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。">
 <meta name="keywords" content="GMTC,大前端,TC39,WebAssembly,Serverless,Flutter">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从GMTC-2019·深圳，看前端技术趋势">
 <meta property="og:url" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/index.html">
 <meta property="og:site_name" content="想啥侃啥">
-<meta property="og:description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。 关于标准 提到前端就绕不开JavaScript，作为一门语言，与swift, dart, java这些背后站着大公司，有明确Roadmap的语言不一样，js是所谓的委员会语言，背后是一个叫做TC39委员会的组织，或">
+<meta property="og:description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/gmtc2019.jpg">
 <meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/tc39.jpg">
@@ -110,10 +110,10 @@
 <meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/lighthouse.jpg">
 <meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/mtflutter.jpg">
 <meta property="og:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/teams.jpg">
-<meta property="og:updated_time" content="2019-12-28T09:06:38.266Z">
+<meta property="og:updated_time" content="2019-12-28T09:11:38.052Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从GMTC-2019·深圳，看前端技术趋势">
-<meta name="twitter:description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。 关于标准 提到前端就绕不开JavaScript，作为一门语言，与swift, dart, java这些背后站着大公司，有明确Roadmap的语言不一样，js是所谓的委员会语言，背后是一个叫做TC39委员会的组织，或">
+<meta name="twitter:description" content="上周末参加完GMTC-2019·深圳站，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。">
 <meta name="twitter:image" content="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/gmtc2019.jpg">
 
 
@@ -403,6 +403,7 @@
 
       
         <p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/gmtc2019.jpg" alt="gmtc2019"><br>上周末参加完<a href="https://gmtc.infoq.cn/2019/shenzhen/" target="_blank" rel="noopener">GMTC-2019·深圳站</a>，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。</p>
+<a id="more"></a>
 <h1 id="关于标准"><a href="#关于标准" class="headerlink" title="关于标准"></a>关于标准</h1><p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/tc39.jpg" alt="TC39"></p>
 <p>提到前端就绕不开JavaScript，作为一门语言，与swift, dart, java这些背后站着大公司，有明确Roadmap的语言不一样，js是所谓的委员会语言，背后是一个叫做<a href="https://github.com/tc39" target="_blank" rel="noopener">TC39委员会</a>的组织，或许是因为360在今年5月份加入了这个组织，本次的GMTC、前一阵的<a href="http://d2forum.alibaba-inc.com/" target="_blank" rel="noopener">D2</a>都找来了TC39的核心成员<a href="https://github.com/littledan" target="_blank" rel="noopener">Daniel Ehrenberg</a>来介绍TC39的运行机制，就普通开发者来说，最最重要的是弄清楚js的语言新特性怎么添加、怎么使用就好。</p>
 <p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/adpater.jpg" alt="老版本浏览器适配"></p>
