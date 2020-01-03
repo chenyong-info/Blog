@@ -1,0 +1,901 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="docker,docker-compose,proxy,oracle-linux,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="背景通常对于公司的服务器来说，为了做到方便的安全管控，需要与外部网络进行隔绝，内部服务器想要跟外部通讯，只能通过DMZ区的权限放通才行，否则你永远想不到一个你不熟悉的程序猿会往github上丢什么奇奇怪怪的东西。  比如18年的华柱用户数据泄露事件，这口大锅就绝对得运维人员来背。不过有的时候隔绝倒是隔绝了，但内网的配套设施没跟上，都已经0202年yum、apt遍布横行的时代了，总归不能还倒退回源码">
+<meta name="keywords" content="docker,docker-compose,proxy,oracle-linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内网环境下的docker安装使用">
+<meta property="og:url" content="http://blog.saubcy.com/2020/01/03/use-docker-with-intranet/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="背景通常对于公司的服务器来说，为了做到方便的安全管控，需要与外部网络进行隔绝，内部服务器想要跟外部通讯，只能通过DMZ区的权限放通才行，否则你永远想不到一个你不熟悉的程序猿会往github上丢什么奇奇怪怪的东西。  比如18年的华柱用户数据泄露事件，这口大锅就绝对得运维人员来背。不过有的时候隔绝倒是隔绝了，但内网的配套设施没跟上，都已经0202年yum、apt遍布横行的时代了，总归不能还倒退回源码">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/03/use-docker-with-intranet/hotel.jpg">
+<meta property="og:updated_time" content="2020-01-03T14:51:46.158Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="内网环境下的docker安装使用">
+<meta name="twitter:description" content="背景通常对于公司的服务器来说，为了做到方便的安全管控，需要与外部网络进行隔绝，内部服务器想要跟外部通讯，只能通过DMZ区的权限放通才行，否则你永远想不到一个你不熟悉的程序猿会往github上丢什么奇奇怪怪的东西。  比如18年的华柱用户数据泄露事件，这口大锅就绝对得运维人员来背。不过有的时候隔绝倒是隔绝了，但内网的配套设施没跟上，都已经0202年yum、apt遍布横行的时代了，总归不能还倒退回源码">
+<meta name="twitter:image" content="http://blog.saubcy.com/2020/01/03/use-docker-with-intranet/hotel.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2020/01/03/use-docker-with-intranet/">
+
+
+
+
+
+  <title> 内网环境下的docker安装使用 | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/01/03/use-docker-with-intranet/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                内网环境下的docker安装使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-03T20:51:26+08:00">
+                2020-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/01/03/use-docker-with-intranet/" class="leancloud_visitors" data-flag-title="内网环境下的docker安装使用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>通常对于公司的服务器来说，为了做到方便的安全管控，需要与外部网络进行隔绝，内部服务器想要跟外部通讯，只能通过<a href="https://www.jianshu.com/p/8580587c3201" target="_blank" rel="noopener">DMZ区</a>的权限放通才行，否则你永远想不到一个你不熟悉的程序猿会往github上丢什么奇奇怪怪的东西。</p>
+<p><img src="/2020/01/03/use-docker-with-intranet/hotel.jpg" alt="github上的数据库连接信息"></p>
+<p>比如18年的<a href="http://ourjs.com/detail/5b85665dac52fe63eba50299" target="_blank" rel="noopener">华柱用户数据泄露事件</a>，这口大锅就绝对得运维人员来背。不过有的时候隔绝倒是隔绝了，但内网的配套设施没跟上，都已经0202年yum、apt遍布横行的时代了，总归不能还倒退回源码编译安装的方式吧。又比如docker离线安装好了，但是需要连接到特定的第三方镜像服务器，如何通过DMZ区的机器代理出去？</p>
+<a id="more"></a>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="Docker离线安装"><a href="#Docker离线安装" class="headerlink" title="Docker离线安装"></a>Docker离线安装</h2><p>这里以国内公司占用率比较高的CentOS系统为例<br>1、 确认内网机器的系统版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lsb_release -a</span><br><span class="line">cat /etc/os-release</span><br></pre></td></tr></table></figure>
+<p>2、下载对应版本的CentOS镜像，并在可以联网的环境中安装一台虚拟机，这个<a href="http://mirrors.dotsrc.org/oracle-linux/" target="_blank" rel="noopener">镜像地址</a>可以找到大部分Linux发行版本的安装文件。</p>
+<p>3、 特别的，如果是Oracle Linux版本，安装好后需要手动更新源文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/yum.repos.d</span><br><span class="line">mv public-yum-ol7.repo public-yum-ol7.repo.bak</span><br><span class="line">wget http://yum.oracle.com/public-yum-ol7.repo</span><br><span class="line"># 编辑public-yum-ol7.repo文件，确保[ol7_last] [ol7_UEKR4] [ol7_optional_latest] [ol7_addons]下的enabled=1</span><br><span class="line">yum clean all</span><br><span class="line">yum makecache</span><br></pre></td></tr></table></figure>
+<p>4、 检测docker依赖项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repoquery -R docker-engine</span><br></pre></td></tr></table></figure>
+<p>5、 下载docker相关软件包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yumdownloader --resolve  docker-engine</span><br></pre></td></tr></table></figure>
+<p>6、 将下载得到的软件包打包压缩，并上传至内网机器。</p>
+<p>7、 解压安装软件包，使用rpm命令进行安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh --replacefiles --replacepkgs *.rpm</span><br></pre></td></tr></table></figure>
+<p>8、 注册docker服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable docker</span><br></pre></td></tr></table></figure>
+<p>9、启动docker服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+<h2 id="Docker镜像离线拉取"><a href="#Docker镜像离线拉取" class="headerlink" title="Docker镜像离线拉取"></a>Docker镜像离线拉取</h2><p>如果说公司政策不允许连接公共镜像服务器进行镜像的拉取，可以进行手工拉取进行离线安装：<br>1、 在虚拟机中首先拉取到目标镜像，然后导出，这里以jenkins为例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull jenkins/jenkins</span><br><span class="line">docker save -o jenkins.docker jenkins/jenkins</span><br></pre></td></tr></table></figure>
+<p>2、 人肉将导出的镜像上传至内网机器进行加载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker load -i jenkins.docker</span><br></pre></td></tr></table></figure></p>
+<h2 id="Docker-Compose离线安装"><a href="#Docker-Compose离线安装" class="headerlink" title="Docker Compose离线安装"></a>Docker Compose离线安装</h2><p>Docker Compose相对简单，只有一个二进制文件<br>1、 在虚拟机环境中下载二进制包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -L &quot;https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o docker-compose</span><br></pre></td></tr></table></figure>
+<p>2、 上传至内网机器 /usr/local/bin 目录，并添加执行权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure>
+<h2 id="Docker代理配置"><a href="#Docker代理配置" class="headerlink" title="Docker代理配置"></a>Docker代理配置</h2><p>如果说你所在的内网环境允许开通部分目标网络的访问，只是需要通过代理出去，那么就涉及到docker代理的配置了，这里的代理又分为守护进程代理（比如docker loing命令），跟docker容器代理。</p>
+<h3 id="Docker-Daemon代理配置"><a href="#Docker-Daemon代理配置" class="headerlink" title="Docker Daemon代理配置"></a>Docker Daemon代理配置</h3><p>1、 新建配置文件目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /etc/systemd/system/docker.service.d</span><br></pre></td></tr></table></figure>
+<p>2、 新建配置文件[/etc/systemd/system/docker.service.d/http-proxy.conf]，并写入如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[Service]</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://xxx.xxx.xxx.xxx:xxxx/&quot;</span><br></pre></td></tr></table></figure>
+<p>这里的 xxx.xxx.xxx.xxx:xxx 替换为对应的内网代理服务器地址，更多说明可以参考<a href="https://docs.docker.com/config/daemon/systemd/" target="_blank" rel="noopener">官方文档</a></p>
+<p>3、 重启服务，并检查代理配置是否生效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br><span class="line">systemctl show --property=Environment docker</span><br></pre></td></tr></table></figure>
+<h3 id="Docker-Container代理配置"><a href="#Docker-Container代理配置" class="headerlink" title="Docker Container代理配置"></a>Docker Container代理配置</h3><p>1、编辑配置文件[~/.docker/config.json]，加入如下配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> &quot;proxies&quot;:</span><br><span class="line"> &#123;</span><br><span class="line">   &quot;default&quot;:</span><br><span class="line">   &#123;</span><br><span class="line">     &quot;httpProxy&quot;: &quot;http://xxx.xxx.xxx,xxx:xxxx/&quot;,</span><br><span class="line">     &quot;httpsProxy&quot;: &quot;http://xxx.xxx.xxx,xxx:xxxx/&quot;,</span><br><span class="line">     &quot;noProxy&quot;: &quot;*.xxx.com&quot;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="如果你还没有内网代理"><a href="#如果你还没有内网代理" class="headerlink" title="如果你还没有内网代理"></a>如果你还没有内网代理</h2><p><a href="https://github.com/txthinking/brook" target="_blank" rel="noopener">Brook</a>是一个不错的选择，最大的特点是单文件，无需root运行。<br>1、 下载执行文件并添加执行权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O brook &quot;https://github.com/txthinking/brook/releases/download/v20200102/brook_linux_386&quot;</span><br><span class="line">chmod +x brook</span><br></pre></td></tr></table></figure>
+<p>2、 启动http代理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nohup ./brook socks5 -l :1080 -i 128.192.182.202  &gt;&gt; trace.log 2&gt;&amp;1 &amp;</span><br><span class="line">nohup ./brook  socks5tohttp -l 128.192.182.202:9999 -s 128.192.182.202:1080 &gt;&gt; trace.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<h2 id="如果你的一些古董程序不支持代理配置"><a href="#如果你的一些古董程序不支持代理配置" class="headerlink" title="如果你的一些古董程序不支持代理配置"></a>如果你的一些古董程序不支持代理配置</h2><p><a href="https://github.com/rofl0r/proxychains-ng" target="_blank" rel="noopener">proxychains</a>是通过hook你的libc网络通讯库来实现让程序通过代理出去的开源软件，理论上只要你的程序基于libc的库都好使。<br>1、下载源码并进行编译安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wget &quot;https://codeload.github.com/rofl0r/proxychains-ng/zip/master&quot; -O proxychains-ng-master.zip</span><br><span class="line">unzip proxychains-ng-master.zip</span><br><span class="line">yum -y install gcc automake autoconf libtool make</span><br><span class="line">cd proxychains-ng-master</span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; make install </span><br><span class="line">/usr/local/lib/libproxychains4.so (644) ,  (755)</span><br><span class="line">    cp ./src/proxychains.conf /etc/proxychains.conf</span><br></pre></td></tr></table></figure>
+<p>2、 拷贝[/usr/local/lib/libproxychains4.so]跟[/usr/local/bin/proxychains4]至内网机器，并添加对应权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod 644 /usr/local/lib/libproxychains4.so </span><br><span class="line">chmod 755 /usr/local/bin/proxychains4</span><br></pre></td></tr></table></figure>
+<p>3、拷贝配置文件[./src/proxychains.conf]至内网机器的[/etc]目录下，并在最后根据注释添加对应的代理配置</p>
+<p>4、使用，这里以curl为例（当然，新版本的curl是支持-x参数来指定代理的）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains4 curl  &quot;http://xxx.test.com/“</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+            <a href="/tags/docker-compose/" rel="tag"># docker-compose</a>
+          
+            <a href="/tags/proxy/" rel="tag"># proxy</a>
+          
+            <a href="/tags/oracle-linux/" rel="tag"># oracle-linux</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/28/trends-from-gmtc-2019-shenzhen/" rel="next" title="从GMTC-2019·深圳，看前端技术趋势">
+                <i class="fa fa-chevron-left"></i> 从GMTC-2019·深圳，看前端技术趋势
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="chenyong">
+          <p class="site-author-name" itemprop="name">chenyong</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决方案"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker离线安装"><span class="nav-number">2.1.</span> <span class="nav-text">Docker离线安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker镜像离线拉取"><span class="nav-number">2.2.</span> <span class="nav-text">Docker镜像离线拉取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Compose离线安装"><span class="nav-number">2.3.</span> <span class="nav-text">Docker Compose离线安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker代理配置"><span class="nav-number">2.4.</span> <span class="nav-text">Docker代理配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Daemon代理配置"><span class="nav-number">2.4.1.</span> <span class="nav-text">Docker Daemon代理配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Container代理配置"><span class="nav-number">2.4.2.</span> <span class="nav-text">Docker Container代理配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如果你还没有内网代理"><span class="nav-number">2.5.</span> <span class="nav-text">如果你还没有内网代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如果你的一些古董程序不支持代理配置"><span class="nav-number">2.6.</span> <span class="nav-text">如果你的一些古董程序不支持代理配置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenyong</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
