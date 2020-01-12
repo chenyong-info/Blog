@@ -281,6 +281,172 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/01/20/project-htmls-in-react-native/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/01/20/project-htmls-in-react-native/" itemprop="url">
+                  工程化ReactNative中的页面资源
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-20T15:45:32+08:00">
+                2019-01-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/20/project-htmls-in-react-native/" class="leancloud_visitors" data-flag-title="工程化ReactNative中的页面资源">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>&emsp;&emsp;就RN生态来说，绝大部分基础组件都能轻松找到开源实现，唯独在地图方面可选项并不多，要么是对<a href="https://github.com/react-native-community/react-native-maps" target="_blank" rel="noopener">系统地图组件的简单封装</a>、要么就是像<a href="https://github.com/mapbox/react-native-mapbox-gl" target="_blank" rel="noopener">Mapbox</a>这样使用门槛略高，反而是<a href="https://openlayers.org/" target="_blank" rel="noopener">OpenLayers</a>这样的纯js组件不仅使用简单、功能还强大。    </p>
+<p><center><img src="/2019/01/20/project-htmls-in-react-native/mapview.jpg" alt="devtools"></center><br>&emsp;&emsp;嘛…… 唯一的缺点是没有RN封装，需要借助于webview的hybird模式。</p>
+<p>&emsp;&emsp;一开始功能简单，就一个单一h5页面，什么逻辑都往里面塞，在源码目录下建个pages文件夹，iOS不用操心，打包时会自动拷贝至<strong>ios/assets</strong>目录下，Android在打包前需要手工拷贝至<strong>android/app/src/main/assets</strong>目录，然后使用WebView加载本地html文件即可：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">renderMap() &#123;</span><br><span class="line">    <span class="keyword">let</span> source = <span class="built_in">require</span>(<span class="string">'../pages/explore.html'</span>);</span><br><span class="line">    <span class="keyword">let</span> originWhitelist = [<span class="string">'*'</span>];</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">'android'</span> === Platform.OS &amp;&amp; !Global[<span class="string">'__DEV__'</span>]) &#123;</span><br><span class="line">      source = &#123; <span class="attr">uri</span>: <span class="string">'file:///android_asset/pages/explore.html'</span> &#125;;</span><br><span class="line">	  originWhitelist = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> view = <span class="literal">null</span>;</span><br><span class="line">    view =</span><br><span class="line">    &lt;WebView</span><br><span class="line">      ref=&#123;(webview) =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>.webview = webview;</span><br><span class="line">      &#125;&#125;</span><br><span class="line">      originWhitelist=&#123;originWhitelist&#125;</span><br><span class="line">      allowUniversalAccessFromFileURLs=&#123;<span class="literal">true</span>&#125;</span><br><span class="line">      source=&#123;source&#125;</span><br><span class="line">    /&gt;</span><br><span class="line">    <span class="keyword">return</span> view;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;等到代码膨胀至几千行滚轮滚着实在太累、就又拆分出来数个功能函数js，但想再继续扩展就有些力不从心了：</p>
+<ol>
+<li>只能使用ES5语法，好多ES6新特性用不上 —— 不是太清楚跟RN的打包怎么集成，也没有太多时间精力去研究；</li>
+<li>页面上第三方组件库引入麻烦；</li>
+<li>功能调试只能使用像是alert、console.log这类原始方法。</li>
+</ol>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/01/20/project-htmls-in-react-native/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/01/13/chrome-remote-devices-window-breaks/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1811,167 +1977,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2018/09/15/it-architecture-affect-by-organization/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chenyong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="想啥侃啥">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/09/15/it-architecture-affect-by-organization/" itemprop="url">
-                  公司组织架构对IT架构的影响
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-15T11:18:03+08:00">
-                2018-09-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术杂谈/" itemprop="url" rel="index">
-                    <span itemprop="name">技术杂谈</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/09/15/it-architecture-affect-by-organization/" class="leancloud_visitors" data-flag-title="公司组织架构对IT架构的影响">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <center><img src="/2018/09/15/it-architecture-affect-by-organization/0.jpg" alt="单枪匹马"></center>          
-
-<p>&emsp;&emsp;一家公司的组织架构，能够维持单纯状态的时间大概也就初创的那么1-2年，这之后要么公司倒闭，要么业务扩展最终养活自己。相伴而生必然带来公司内部新势力的崛起，这时候“<strong>部门</strong>”之于CEO、就像是<strong>诸侯之于周天子</strong>，是一种维持公司各方势力、凝聚一致对外的工具。公司要想活下去就要不断的适应市场、而随着业务的转变也就带来了组织架构的不断变更调整，最近的例子像是2天前的<a href="http://www.eeo.com.cn/2018/0913/336987.shtml" title="雷军内部信" target="_blank" rel="noopener">雷军内部信</a></p>
-<p>&emsp;&emsp;工作十几年、看着国家企业信息化喊了十几年，期间即待过项目外包型公司——<strong>给传统企业做IT项目</strong>，也待过产品型公司——<strong>直接面向互联网C端用户</strong>，还待过业务型公司——<strong>传统行业的IT支持部门</strong>，甚至自己创过业……</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/15/it-architecture-affect-by-organization/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2019,7 +2024,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
