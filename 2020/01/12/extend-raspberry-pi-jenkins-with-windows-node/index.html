@@ -101,9 +101,9 @@
 <meta property="og:image" content="http://blog.saubcy.com/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/slave-node.png">
 <meta property="og:image" content="http://blog.saubcy.com/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/agent.png">
 <meta property="og:image" content="http://blog.saubcy.com/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/agents.png">
-<meta property="og:image" content="http://blog.saubcy.com/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/tags.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/tag.png">
 <meta property="og:image" content="http://blog.saubcy.com/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/execute-windows-batch-command.png">
-<meta property="og:updated_time" content="2020-01-12T13:07:45.725Z">
+<meta property="og:updated_time" content="2020-01-12T13:10:15.053Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过Windows节点增强树莓派上的Jenkins性能">
 <meta name="twitter:description" content="背景最近在Jenkins上编译react工程的时候老是会卡在“Creating an optimized production build…”这一步上很久，最后失败掉。 1234567891011121314......+ yarn buildyarn run v1.19.1$ react-app-rewired buildThe following changes are being made">
@@ -414,7 +414,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar agent.jar -jnlpUrl http://xxx.xxx.xxx.xxx:8080/computer/Win10/slave-agent.jnlp -secret xxxxxxxxx -workDir &quot;D:\Workplace\Jenkins&quot;</span><br></pre></td></tr></table></figure>
 <p><img src="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/agents.png" alt="节点列表"></p>
 <p>5、在原有react构建任务的基础上复制一个新任务，修改标签，指定使用新的Windows节点机器运行</p>
-<p><img src="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/tags.png" alt="指定任务运行节点"></p>
+<p><img src="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/tag.png" alt="指定任务运行节点"></p>
 <p>6、移除构建下的“Execute shell”，改为适配Win环境的“Execute Windows batch command”</p>
 <p><img src="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/execute-windows-batch-command.png" alt="Execute Windows batch command"></p>
 <p>接下来点击构建，就可以享受飞快的构建体验了，从之前的15分钟还无法完成，提升到了46秒😺</p>
