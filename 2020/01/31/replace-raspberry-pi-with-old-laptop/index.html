@@ -1,0 +1,912 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="树莓派,服务器,神舟,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="背景虽然之前通过增加windows节点机的方式解决了树莓派编译react工程时内存不足的问题，不过最近又遇到好几个需要在本地跑数据处理的任务，所以终究还是逃不开树莓派算力升级的问题，原本是打算着等开年后就入手之前看上的技嘉 BLCE-4000C，哪知道赶上了百年不遇的超级春节长假，看起来商家恢复发货也是遥遥无期 囧rz  然后偶然瞥见蹲角落里吃灰2年多的神船，作为7年前的老爷机，虽然CPU是弱了些">
+<meta name="keywords" content="树莓派,服务器,神舟">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用老旧笔记本替代树莓派搭建家庭服务器">
+<meta property="og:url" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="背景虽然之前通过增加windows节点机的方式解决了树莓派编译react工程时内存不足的问题，不过最近又遇到好几个需要在本地跑数据处理的任务，所以终究还是逃不开树莓派算力升级的问题，原本是打算着等开年后就入手之前看上的技嘉 BLCE-4000C，哪知道赶上了百年不遇的超级春节长假，看起来商家恢复发货也是遥遥无期 囧rz  然后偶然瞥见蹲角落里吃灰2年多的神船，作为7年前的老爷机，虽然CPU是弱了些">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/hasee.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/raspberry-tdp.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/rufus.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/backup.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/source.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/idle.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/idle2.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/full.jpg">
+<meta property="og:updated_time" content="2020-01-31T14:01:05.723Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用老旧笔记本替代树莓派搭建家庭服务器">
+<meta name="twitter:description" content="背景虽然之前通过增加windows节点机的方式解决了树莓派编译react工程时内存不足的问题，不过最近又遇到好几个需要在本地跑数据处理的任务，所以终究还是逃不开树莓派算力升级的问题，原本是打算着等开年后就入手之前看上的技嘉 BLCE-4000C，哪知道赶上了百年不遇的超级春节长假，看起来商家恢复发货也是遥遥无期 囧rz  然后偶然瞥见蹲角落里吃灰2年多的神船，作为7年前的老爷机，虽然CPU是弱了些">
+<meta name="twitter:image" content="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/hasee.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/">
+
+
+
+
+
+  <title> 使用老旧笔记本替代树莓派搭建家庭服务器 | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/01/31/replace-raspberry-pi-with-old-laptop/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用老旧笔记本替代树莓派搭建家庭服务器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-31T19:36:35+08:00">
+                2020-01-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/01/31/replace-raspberry-pi-with-old-laptop/" class="leancloud_visitors" data-flag-title="使用老旧笔记本替代树莓派搭建家庭服务器">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>虽然之前通过<a href="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/">增加windows节点机</a>的方式解决了树莓派编译react工程时内存不足的问题，不过最近又遇到好几个需要在本地跑数据处理的任务，所以终究还是逃不开树莓派算力升级的问题，原本是打算着等开年后就入手之前看上的技嘉 BLCE-4000C，哪知道赶上了百年不遇的超级春节长假，看起来商家恢复发货也是遥遥无期 囧rz</p>
+<p><img src="/2020/01/31/replace-raspberry-pi-with-old-laptop/hasee.jpg" alt="神舟 优雅A480B-I5 D1"></p>
+<p>然后偶然瞥见蹲角落里吃灰2年多的神船，作为7年前的老爷机，虽然CPU是弱了些儿，好歹也是曾经升了5G无线网卡、SSD固态盘、8Gx2内存，大体上除了屏幕排线有点儿接触不良没啥大毛病。</p>
+<p><img src="/2020/01/31/replace-raspberry-pi-with-old-laptop/raspberry-tdp.jpg" alt="树莓派功耗"></p>
+<p>对比起来i5-3210m的35w确实比<a href="https://www.pidramble.com/wiki/benchmarks/power-consumption" target="_blank" rel="noopener">树莓派</a>4的6w高上不少，性能方面好歹能把树莓派按地上使劲摩擦。</p>
+<a id="more"></a>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>说干就干，系统上还是选择跟树莓派上一致的Ubuntu 18.04，至少软件包安装省心。</p>
+<h2 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装"></a>系统安装</h2><p><img src="/2020/01/31/replace-raspberry-pi-with-old-laptop/rufus.png" alt="启动盘制作"></p>
+<p>下载<a href="https://ubuntu.com/server" target="_blank" rel="noopener">镜像</a>后使用<a href="https://rufus.ie/" target="_blank" rel="noopener">Rufus</a>制作启动盘，然后启动安装一路下一步就好了，过程中记得勾选一下OpenSSH Server跟把软件源换成阿里云的就好。</p>
+<h2 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h2><h3 id="启用网卡"><a href="#启用网卡" class="headerlink" title="启用网卡"></a>启用网卡</h3><p>系统安装好后默认有线网卡跟无线网卡都是处于停用状态，需要先使用<strong>ifconfig -a</strong>查看网卡名称，然后再启用（这里有线网卡跟无线网卡名称分别微enp3s0跟wlp2s0）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$sudo ifconfig enp3s0 up</span><br><span class="line">$sudo ifconfig wlp2s0 up</span><br></pre></td></tr></table></figure>
+<h3 id="配置有线网络"><a href="#配置有线网络" class="headerlink" title="配置有线网络"></a>配置有线网络</h3><p>因为需要安装无线工具包才能进行无线网络的连接，所以需要先接上网线，配置好有线网络。</p>
+<p>编辑文件[/etc/netplan/50-cloud-init.yaml]，配置有线网卡自动获取ip</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">network:</span><br><span class="line">  version: 2</span><br><span class="line">  renderer: networkd</span><br><span class="line">  ethernets:</span><br><span class="line">    enp3s0:</span><br><span class="line">      dhcp4: yes</span><br><span class="line">      dhcp6: no</span><br></pre></td></tr></table></figure>
+<p>然后生效网络配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$sudo netplan apply</span><br><span class="line">$sudo ifconfig enp3s0 down</span><br><span class="line">$sudo ifconfig enp3s0 up</span><br></pre></td></tr></table></figure>
+<h3 id="配置无线网络"><a href="#配置无线网络" class="headerlink" title="配置无线网络"></a>配置无线网络</h3><p>首先安装无线网络工具包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$sudo apt-get update</span><br><span class="line">$sudo apt-get install wireless-tools wpasupplicant</span><br></pre></td></tr></table></figure>
+<p>查找网络信号，确保家里的无线信号能被搜索到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sudo iwlist wlp2s0 scan | grep ESSID</span><br></pre></td></tr></table></figure>
+<p>最后编辑文件[/etc/netplan/50-cloud-init.yaml]，配置无线网卡</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">network:</span><br><span class="line">    version: 2</span><br><span class="line">    renderer: networkd</span><br><span class="line">    ethernets:</span><br><span class="line">      enp3s0:</span><br><span class="line">        dhcp4: yes</span><br><span class="line">        dhcp6: no</span><br><span class="line">    wifis:</span><br><span class="line">      wlp2s0:</span><br><span class="line">        dhcp4: yes</span><br><span class="line">        dhcp6: no</span><br><span class="line">        access-points:</span><br><span class="line">          &quot;ChinaNet-4C76&quot;:</span><br><span class="line">            password: &quot;12345678&quot;</span><br></pre></td></tr></table></figure>
+<p>重启网络</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$sudo netplan apply</span><br><span class="line">$sudo ifconfig wlp2s0 down</span><br><span class="line">$sudo ifconfig wlp2s0 up</span><br></pre></td></tr></table></figure>
+<h2 id="开启root登录"><a href="#开启root登录" class="headerlink" title="开启root登录"></a>开启root登录</h2><p>反正是在家里自己用，使用root比每次sudo输密码要方便快速多了，首先修改配置文件[/etc/ssh/sshd_config]，打开root的远程登录选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">LoginGraceTime 2m</span><br><span class="line">PermitRootLogin yes</span><br><span class="line">StrictModes yes</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>然后设置root密码并重启ssh服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$sudo passwd root</span><br><span class="line">$sudo service ssh restart</span><br></pre></td></tr></table></figure></p>
+<h2 id="防休眠设置"><a href="#防休眠设置" class="headerlink" title="防休眠设置"></a>防休眠设置</h2><p>虽然笔记本合上盖子后电脑不会马上休眠，不过等上个10来分钟还是休眠掉，所以还需要特地设置一下。</p>
+<p>修改配置文件[/etc/systemd/logind.conf]]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">HandleLidSwitch=ignore</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>然后重启服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service systemd-logind restart</span><br></pre></td></tr></table></figure>
+<h2 id="迁移jenkins配置"><a href="#迁移jenkins配置" class="headerlink" title="迁移jenkins配置"></a>迁移jenkins配置</h2><p>之前在树莓派的jenkins配置了那么多的任务，总归是不能一个个的再配置过来，这里可以使用版本库来进行备份跟同步。</p>
+<h3 id="配置备份"><a href="#配置备份" class="headerlink" title="配置备份"></a>配置备份</h3><p>首先需要在树莓派的jenkins上新建一个配置备份的任务</p>
+<p><img src="/2020/01/31/replace-raspberry-pi-with-old-laptop/backup.png" alt="新建一个Freestyle工程"></p>
+<p><img src="/2020/01/31/replace-raspberry-pi-with-old-laptop/source.png" alt="源码管理选择“无”"></p>
+<p>添加构建脚本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">cd /var/lib/jenkins</span><br><span class="line"></span><br><span class="line">git add -- *.xml jobs/*/*.xml userContent/* ansible/*</span><br><span class="line"></span><br><span class="line">if [ -d users ]; then</span><br><span class="line">    user_configs=`ls users/*/config.xml`</span><br><span class="line"></span><br><span class="line">    if [ -n &quot;$user_configs&quot; ]; then</span><br><span class="line">        git add $user_configs</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">    if [ -n &quot;users/users.xml&quot; ]; then</span><br><span class="line">        git add users/users.xml</span><br><span class="line">    fi</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">to_remove=`git status | grep &quot;deleted&quot; | awk &apos;&#123;print $3&#125;&apos;`</span><br><span class="line"></span><br><span class="line">if [ -n &quot;$to_remove&quot; ]; then</span><br><span class="line">    git rm --ignore-unmatch $to_remove</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">git commit -m &quot;Automated Jenkins commit&quot;</span><br><span class="line"></span><br><span class="line">git push -q -u origin master</span><br></pre></td></tr></table></figure>
+<p>然后ssh窗口中切换至jenkins用户下初始化git仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$cd /var/lib/jenkins &amp;&amp; git init</span><br><span class="line">$git config --global user.email &quot;xxx@xxx.com&quot;</span><br><span class="line">$git config --global user.name &quot;xxx&quot;</span><br><span class="line">$git remote add origin &lt;你用来备份配置的git仓库地址&gt;</span><br></pre></td></tr></table></figure>
+<p>最后手工触发任务，备份就完成了</p>
+<h3 id="配置还原"><a href="#配置还原" class="headerlink" title="配置还原"></a>配置还原</h3><p>回到新安装的机器上，以jenkins用户登录，首先清空home目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$cd /var/lib/jenkins &amp;&amp; rm -rf *</span><br></pre></td></tr></table></figure>
+<p>初始化git仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$cd /var/lib/jenkins</span><br><span class="line">$git init</span><br><span class="line">$git clean -df</span><br><span class="line">$git remote add origin &lt;你用来备份配置的git仓库地址&gt;</span><br></pre></td></tr></table></figure>
+<p>配置ssh密钥（可以参考<a href="/2019/11/03/devops-with-raspberry-pi/">之前的文章</a>），然后拉取备份</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$git pull origin master</span><br></pre></td></tr></table></figure>
+<p>plugins的插件目录需要手工同步，当然也可以在备份的时候选择一块添加到git库中，接着重启jenkins服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$service jenkins restart</span><br></pre></td></tr></table></figure>
+<p>最后 Jenkins –&gt; 凭据 –&gt; 系统 –&gt; 全局凭据 跟 Jenkins –&gt; 系统管理 –&gt; 系统配置 –&gt; Publish over SSH 中替换新机器的ssh密钥迁移就完成了。</p>
+<h2 id="关于功耗"><a href="#关于功耗" class="headerlink" title="关于功耗"></a>关于功耗</h2><p>最后测试下来，合盖待机状态下是11w、开屏待机15w、开4个jenkins任务的情况下跑到35w，算下来新机器的钱够好多年的电费了[doge]</p>
+<p><img src="/2020/01/31/replace-raspberry-pi-with-old-laptop/idle.jpg" alt="合盖待机"></p>
+<p><img src="/2020/01/31/replace-raspberry-pi-with-old-laptop/idle2.jpg" alt="开屏待机"></p>
+<p><img src="/2020/01/31/replace-raspberry-pi-with-old-laptop/full.jpg" alt="任务功耗"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/树莓派/" rel="tag"># 树莓派</a>
+          
+            <a href="/tags/服务器/" rel="tag"># 服务器</a>
+          
+            <a href="/tags/神舟/" rel="tag"># 神舟</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/30/use-wechat-jssdk-in-react-project-with-typescript/" rel="next" title="在基于typescript的react工程中引入微信jssdk">
+                <i class="fa fa-chevron-left"></i> 在基于typescript的react工程中引入微信jssdk
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="chenyong">
+          <p class="site-author-name" itemprop="name">chenyong</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">90</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决方案"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统安装"><span class="nav-number">2.1.</span> <span class="nav-text">系统安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络配置"><span class="nav-number">2.2.</span> <span class="nav-text">网络配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启用网卡"><span class="nav-number">2.2.1.</span> <span class="nav-text">启用网卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置有线网络"><span class="nav-number">2.2.2.</span> <span class="nav-text">配置有线网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置无线网络"><span class="nav-number">2.2.3.</span> <span class="nav-text">配置无线网络</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启root登录"><span class="nav-number">2.3.</span> <span class="nav-text">开启root登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#防休眠设置"><span class="nav-number">2.4.</span> <span class="nav-text">防休眠设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移jenkins配置"><span class="nav-number">2.5.</span> <span class="nav-text">迁移jenkins配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置备份"><span class="nav-number">2.5.1.</span> <span class="nav-text">配置备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置还原"><span class="nav-number">2.5.2.</span> <span class="nav-text">配置还原</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于功耗"><span class="nav-number">2.6.</span> <span class="nav-text">关于功耗</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenyong</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
