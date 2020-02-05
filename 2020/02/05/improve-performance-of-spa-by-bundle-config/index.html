@@ -1,0 +1,894 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Vue,React,webpack,性能,动态import(),组件懒加载,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="背景前几天突然被拉去弄个紧急项目，然后就发现个现象，每次jenkins发版完后第一次打开都特别慢，如果在过去忙着实现功能可能都不会在意这种事情，多半就是接口之类响应慢吧，等等就好了。因为这次项目难度不大，很快就弄完了前端页面部分在等接口联调，闲着没事就开了个控制台：  好嘛，一个2.4M的js文件加载了快1分钟，平时在内网开发、测试都还感觉不到，碰上这次超级春节长假大家都远程办公，问题就体现出来了">
+<meta name="keywords" content="Vue,React,webpack,性能,动态import(),组件懒加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过打包配置提升单页web应用的首次加载速度">
+<meta property="og:url" content="http://blog.saubcy.com/2020/02/05/improve-performance-of-spa-by-bundle-config/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="背景前几天突然被拉去弄个紧急项目，然后就发现个现象，每次jenkins发版完后第一次打开都特别慢，如果在过去忙着实现功能可能都不会在意这种事情，多半就是接口之类响应慢吧，等等就好了。因为这次项目难度不大，很快就弄完了前端页面部分在等接口联调，闲着没事就开了个控制台：  好嘛，一个2.4M的js文件加载了快1分钟，平时在内网开发、测试都还感觉不到，碰上这次超级春节长假大家都远程办公，问题就体现出来了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2020/02/05/improve-performance-of-spa-by-bundle-config/big_bundle.jpg">
+<meta property="og:image" content="http://blog.saubcy.com/2020/02/05/improve-performance-of-spa-by-bundle-config/first_load.png">
+<meta property="og:updated_time" content="2020-02-05T15:22:57.553Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过打包配置提升单页web应用的首次加载速度">
+<meta name="twitter:description" content="背景前几天突然被拉去弄个紧急项目，然后就发现个现象，每次jenkins发版完后第一次打开都特别慢，如果在过去忙着实现功能可能都不会在意这种事情，多半就是接口之类响应慢吧，等等就好了。因为这次项目难度不大，很快就弄完了前端页面部分在等接口联调，闲着没事就开了个控制台：  好嘛，一个2.4M的js文件加载了快1分钟，平时在内网开发、测试都还感觉不到，碰上这次超级春节长假大家都远程办公，问题就体现出来了">
+<meta name="twitter:image" content="http://blog.saubcy.com/2020/02/05/improve-performance-of-spa-by-bundle-config/big_bundle.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2020/02/05/improve-performance-of-spa-by-bundle-config/">
+
+
+
+
+
+  <title> 通过打包配置提升单页web应用的首次加载速度 | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/02/05/improve-performance-of-spa-by-bundle-config/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                通过打包配置提升单页web应用的首次加载速度
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-05T21:16:46+08:00">
+                2020-02-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/02/05/improve-performance-of-spa-by-bundle-config/" class="leancloud_visitors" data-flag-title="通过打包配置提升单页web应用的首次加载速度">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>前几天突然被拉去弄个紧急项目，然后就发现个现象，每次jenkins发版完后第一次打开都特别慢，如果在过去忙着实现功能可能都不会在意这种事情，多半就是接口之类响应慢吧，等等就好了。因为这次项目难度不大，很快就弄完了前端页面部分在等接口联调，闲着没事就开了个控制台：</p>
+<p><img src="/2020/02/05/improve-performance-of-spa-by-bundle-config/big_bundle.jpg" alt="巨大的bundle包"></p>
+<p>好嘛，一个2.4M的js文件加载了快1分钟，平时在内网开发、测试都还感觉不到，碰上这次超级春节长假大家都远程办公，问题就体现出来了。</p>
+<a id="more"></a>
+<h1 id="分析解决"><a href="#分析解决" class="headerlink" title="分析解决"></a>分析解决</h1><p>在前端技术快速发展的这么些年，工程化程度已经很高了，通常要开发一个前端项目都无法避免的需要用到各种第三方库，而最终的发布包为防止出现请求数过多的连接损耗（据说http2已经不怕了），会将所有js打包合并打包成一个bundle，同时根据一定的策略（比如说拆封第三方包，跟自有逻辑代码），又会将bundle切分成多个文件，称为chunk，所以这里的问题就是最终打出来的bundle包太大了，事实上安装项目的逻辑复杂度不应该有这么多依赖才对。</p>
+<h2 id="针对第三方包切分chunk"><a href="#针对第三方包切分chunk" class="headerlink" title="针对第三方包切分chunk"></a>针对第三方包切分chunk</h2><p>分析问题的第一步就是需要知道，到底是哪个第三方包贡献了最大体积，这里可以通过修改webpack的配置来实现，以vue-cli3的配置为例：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">   ...</span><br><span class="line">    // webpack配置</span><br><span class="line">    configureWebpack: &#123;</span><br><span class="line">        entry: path.resolve(__dirname, 'src/main.js'),</span><br><span class="line">        output: &#123;</span><br><span class="line">            path: path.resolve(__dirname, 'dist'),</span><br><span class="line">            filename: '[name].[hash].js',</span><br><span class="line">        &#125;,</span><br><span class="line">        optimization: &#123;</span><br><span class="line">            runtimeChunk: 'single',</span><br><span class="line">            splitChunks: &#123;</span><br><span class="line">                chunks: 'all',</span><br><span class="line">                maxInitialRequests: Infinity,</span><br><span class="line">                minSize: 0,</span><br><span class="line">                cacheGroups: &#123;</span><br><span class="line">                    vendor: &#123;</span><br><span class="line">                        test: /[\\/]node_modules[\\/]/,</span><br><span class="line">                        name(module) &#123;</span><br><span class="line">                            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];</span><br><span class="line">                            return `chunk.$&#123;packageName.replace('@', '')&#125;`;</span><br><span class="line">                        &#125;,</span><br><span class="line">                    &#125;,</span><br><span class="line">                &#125;,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之后再次执行打包就能将各第三方包切分到不同的chunk文件中，结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">File                                      Size             Gzipped</span><br><span class="line"></span><br><span class="line">dist\js\chunk.ant-design-vue.cd80903e.js    723.04 KiB       197.08 KiB</span><br><span class="line">dist\js\chunk.element-ui.706b7bfd.js        651.31 KiB       159.23 KiB</span><br><span class="line">dist\js\chunk.ant-design.5a37e430.js        487.75 KiB       149.15 KiB</span><br><span class="line">dist\js\chunk.moment.64fc076a.js            265.93 KiB       70.29 KiB</span><br><span class="line">dist\js\main.2ac5609b.js                  93.14 KiB        11.44 KiB</span><br><span class="line">dist\js\chunk.vue.fee2d0ce.js               64.44 KiB        23.14 KiB</span><br><span class="line">dist\js\chunk.core-js.57eade5c.js           49.65 KiB        13.52 KiB</span><br><span class="line">dist\js\chunk.lodash.cc36eec0.js            39.79 KiB        12.10 KiB</span><br><span class="line">dist\js\chunk.vue-router.ff9d40d5.js        26.40 KiB        9.24 KiB</span><br><span class="line">dist\js\chunk.tinycolor2.ca010ed2.js        14.40 KiB        5.08 KiB</span><br><span class="line">dist\js\chunk.axios.104e3781.js             13.73 KiB        4.68 KiB</span><br><span class="line">dist\js\chunk.dom-align.26879579.js         12.99 KiB        4.94 KiB</span><br><span class="line">dist\js\chunk.async-validator.035de2e6.j    12.28 KiB        3.88 KiB</span><br><span class="line">s</span><br><span class="line">dist\js\chunk.vuex.6ce980ef.js              10.13 KiB        3.13 KiB</span><br><span class="line">dist\js\chunk.resize-observer-polyfill.9    7.81 KiB         2.50 KiB</span><br><span class="line">057ca08.js</span><br><span class="line">dist\js\chunk.regenerator-runtime.1bdd7a    6.21 KiB         2.31 KiB</span><br><span class="line">43.js</span><br><span class="line">dist\js\chunk.dom-scroll-into-view.43888    6.06 KiB         2.41 KiB</span><br><span class="line">cb2.js</span><br><span class="line">dist\js\chunk.add-dom-event-listener.f73    4.25 KiB         1.64 KiB</span><br><span class="line">30b55.js</span><br><span class="line">dist\js\chunk.mutationobserver-shim.f3a2    3.56 KiB         1.52 KiB</span><br><span class="line">719a.js</span><br><span class="line">dist\js\chunk.normalize-wheel.968f2848.j    3.52 KiB         1.60 KiB</span><br><span class="line">s</span><br><span class="line">dist\js\chunk.babel-runtime.16b92121.js     3.19 KiB         1.01 KiB</span><br><span class="line">dist\js\chunk.vuejs-logger.0f798d16.js      2.84 KiB         1.15 KiB</span><br><span class="line">dist\js\chunk.enquire.js.1c0279d7.js        2.26 KiB         0.92 KiB</span><br><span class="line">dist\js\chunk.setimmediate.8beabbc6.js      1.84 KiB         0.89 KiB</span><br><span class="line">dist\js\chunk.process.e2ef65ec.js           1.73 KiB         0.73 KiB</span><br><span class="line">dist\js\chunk.ismobilejs.606ec633.js        1.55 KiB         0.72 KiB</span><br><span class="line">dist\runtime.7820c83ae420af7985bb.js      1.48 KiB         0.71 KiB</span><br><span class="line">dist\js\chunk.component-classes.a9bdfe98    1.32 KiB         0.60 KiB</span><br><span class="line">.js</span><br><span class="line">dist\js\chunk.deepmerge.1a84198c.js         1.23 KiB         0.62 KiB</span><br><span class="line">dist\js\chunk.babel.a29a890d.js             1.20 KiB         0.56 KiB</span><br><span class="line">dist\js\chunk.timers-browserify.5700b26f    1.18 KiB         0.45 KiB</span><br><span class="line">.js</span><br><span class="line">dist\js\chunk.object-assign.693dae9a.js     1.08 KiB         0.61 KiB</span><br><span class="line">dist\js\chunk.raf.950942e6.js               0.96 KiB         0.52 KiB</span><br><span class="line">dist\js\chunk.vue-loader.42733d6e.js        0.85 KiB         0.48 KiB</span><br><span class="line">dist\js\chunk.vue-ref.a8f4597e.js           0.70 KiB         0.36 KiB</span><br><span class="line">dist\js\chunk.babel-helper-vue-jsx-merge    0.68 KiB         0.38 KiB</span><br><span class="line">-props.d2b78d34.js</span><br><span class="line">dist\js\chunk.classnames.9d5aa03e.js        0.67 KiB         0.43 KiB</span><br><span class="line">dist\js\chunk.es6-object-assign.031da824    0.61 KiB         0.39 KiB</span><br><span class="line">.js</span><br><span class="line">dist\js\chunk.performance-now.1ef110c4.j    0.60 KiB         0.30 KiB</span><br><span class="line">s</span><br><span class="line">dist\js\chunk.throttle-debounce.9e006254    0.60 KiB         0.34 KiB</span><br><span class="line">.js</span><br><span class="line">dist\js\chunk.webpack.43202d1a.js           0.53 KiB         0.29 KiB</span><br><span class="line">dist\js\chunk.json2mq.b3e258e0.js           0.52 KiB         0.33 KiB</span><br><span class="line">dist\js\chunk.shallowequal.eb77517f.js      0.51 KiB         0.31 KiB</span><br><span class="line">dist\js\chunk.dom-matches.b034f072.js       0.43 KiB         0.28 KiB</span><br><span class="line">dist\js\chunk.array-tree-filter.f01d3ae1    0.40 KiB         0.26 KiB</span><br><span class="line">.js</span><br><span class="line">dist\js\chunk.shallow-equal.73a4cea0.js     0.27 KiB         0.20 KiB</span><br><span class="line">dist\js\chunk.omit.js.44841e35.js           0.23 KiB         0.19 KiB</span><br><span class="line">dist\js\chunk.dom-closest.0e518f19.js       0.22 KiB         0.18 KiB</span><br><span class="line">dist\js\chunk.component-indexof.74394922    0.22 KiB         0.17 KiB</span><br><span class="line">.js</span><br><span class="line">dist\js\chunk.string-convert.d2e46b06.js    0.21 KiB         0.16 KiB</span><br><span class="line">dist\js\chunk.is-negative-zero.0e1ef881.    0.17 KiB         0.15 KiB</span><br><span class="line">js</span><br><span class="line">dist\js\chunk.warning.6a7436eb.js           0.14 KiB         0.13 KiB</span><br><span class="line">dist\css\npm.ant-design-vue.2f4f067f.c    403.26 KiB       50.80 KiB</span><br><span class="line">ss</span><br><span class="line">dist\css\npm.element-ui.8b09ba0f.css      225.79 KiB       34.43 KiB</span><br><span class="line">dist\css\main.a59cd3b0.css                3.66 KiB         1.07 KiB</span><br></pre></td></tr></table></figure>
+<p>这样问题就很明显了，2个UI库antd跟element-ui合起来就超过了1.5M，平时因为偷懒对于这类UI库都是全包引入，即使对于antd就只使用了一个加载动画。</p>
+<h2 id="按需加载"><a href="#按需加载" class="headerlink" title="按需加载"></a>按需加载</h2><p>一般来说对应的UI库都会提供按需加载方案，比如说<a href="https://www.antdv.com/docs/vue/getting-started-cn/#%25E6%258C%2589%25E9%259C%2580%25E5%258A%25A0%25E8%25BD%25BD" target="_blank" rel="noopener">andtd</a>的，<a href="https://element.eleme.cn/#/zh-CN/component/quickstart#an-xu-yin-ru" target="_blank" rel="noopener">element-ui</a>的，直接参考官网说明就好了，没有太多需要说明的，只是说为了方便管理，可以为不同UI组件库专门新建一个单独的js文件，将对于此UI库的组件引用都丢一块，然后在main.js中在引入这个文件就好了，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;</span><br><span class="line"></span><br><span class="line">import &#123;</span><br><span class="line">    Row,</span><br><span class="line">    Col,</span><br><span class="line">    Menu,</span><br><span class="line">    MenuItem,</span><br><span class="line">    Submenu,</span><br><span class="line">    Breadcrumb,</span><br><span class="line">    BreadcrumbItem,</span><br><span class="line">    Table,</span><br><span class="line">    TableColumn,</span><br><span class="line">    pagination,</span><br><span class="line">    Tabs,</span><br><span class="line">    TabPane,</span><br><span class="line">    Form,</span><br><span class="line">    FormItem,</span><br><span class="line">    Select,</span><br><span class="line">    Input,</span><br><span class="line">    Button,</span><br><span class="line">    Option,</span><br><span class="line">    Message,</span><br><span class="line">    Dialog,</span><br><span class="line">    Alert,</span><br><span class="line">&#125; from &apos;element-ui&apos;;</span><br><span class="line"></span><br><span class="line">Vue.use(Row);</span><br><span class="line">Vue.use(Col);</span><br><span class="line">Vue.use(Menu);</span><br><span class="line">Vue.use(MenuItem);</span><br><span class="line">Vue.use(Submenu);</span><br><span class="line">Vue.use(Breadcrumb);</span><br><span class="line">Vue.use(BreadcrumbItem);</span><br><span class="line">Vue.use(Table);</span><br><span class="line">Vue.use(TableColumn);</span><br><span class="line">Vue.use(pagination);</span><br><span class="line">Vue.use(Tabs);</span><br><span class="line">Vue.use(TabPane);</span><br><span class="line">Vue.use(Form);</span><br><span class="line">Vue.use(FormItem);</span><br><span class="line">Vue.use(Select);</span><br><span class="line">Vue.use(Input);</span><br><span class="line">Vue.use(Button);</span><br><span class="line">Vue.use(Option);</span><br><span class="line">Vue.use(Dialog);</span><br><span class="line">Vue.use(Alert);</span><br><span class="line"></span><br><span class="line">Vue.prototype.$message = Message;</span><br></pre></td></tr></table></figure>
+<p>这样改造后的效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">File                                      Size             Gzipped</span><br><span class="line"></span><br><span class="line">dist\js\chunk.element-ui.6e23f077.js      257.04 KiB       61.32 KiB</span><br><span class="line">dist\js\main.122644fe.js                  89.45 KiB        10.15 KiB</span><br><span class="line">dist\js\chunk.vue.d04d1a0b.js             64.44 KiB        23.14 KiB</span><br><span class="line">dist\js\chunk.core-js.1ed5f8bb.js         49.65 KiB        13.52 KiB</span><br><span class="line">dist\js\chunk.ant-design-vue.5e0dbd04.    31.19 KiB        10.20 KiB</span><br><span class="line">js</span><br><span class="line">dist\js\chunk.vue-router.7fb4eb4d.js      26.41 KiB        9.24 KiB</span><br><span class="line">dist\js\chunk.axios.95604f08.js           13.73 KiB        4.68 KiB</span><br><span class="line">dist\js\chunk.async-validator.4a2028fd    12.28 KiB        3.89 KiB</span><br><span class="line">.js</span><br><span class="line">dist\js\chunk.vuex.c302fad4.js            10.13 KiB        3.13 KiB</span><br><span class="line">dist\js\chunk.resize-observer-polyfill    7.81 KiB         2.51 KiB</span><br><span class="line">.27213368.js</span><br><span class="line">dist\js\chunk.regenerator-runtime.1d99    6.21 KiB         2.32 KiB</span><br><span class="line">9e29.js</span><br><span class="line">dist\js\chunk.normalize-wheel.a8255151    3.52 KiB         1.60 KiB</span><br><span class="line">.js</span><br><span class="line">dist\js\chunk.lodash.e057cafe.js          3.24 KiB         1.34 KiB</span><br><span class="line">dist\js\chunk.vuejs-logger.588a5a58.js    2.84 KiB         1.15 KiB</span><br><span class="line">dist\js\chunk.babel-runtime.64168a82.j    2.68 KiB         0.87 KiB</span><br><span class="line">s</span><br><span class="line">dist\js\chunk.process.93970018.js         1.73 KiB         0.73 KiB</span><br><span class="line">dist\runtime.45660f198238397a01ec.js      1.48 KiB         0.71 KiB</span><br><span class="line">dist\js\chunk.deepmerge.cb65fd74.js       1.23 KiB         0.62 KiB</span><br><span class="line">dist\js\chunk.babel.9ac1b3fd.js           1.20 KiB         0.56 KiB</span><br><span class="line">dist\js\chunk.vue-loader.b9c5df7e.js      0.85 KiB         0.48 KiB</span><br><span class="line">dist\js\chunk.vue-ref.2e5a80d7.js         0.70 KiB         0.36 KiB</span><br><span class="line">dist\js\chunk.babel-helper-vue-jsx-mer    0.68 KiB         0.38 KiB</span><br><span class="line">ge-props.8ffab4f7.js</span><br><span class="line">dist\js\chunk.classnames.60b05cca.js      0.67 KiB         0.43 KiB</span><br><span class="line">dist\js\chunk.es6-object-assign.aaeaaa    0.61 KiB         0.39 KiB</span><br><span class="line">7f.js</span><br><span class="line">dist\js\chunk.throttle-debounce.b38861    0.60 KiB         0.35 KiB</span><br><span class="line">de.js</span><br><span class="line">dist\js\chunk.webpack.0cb642d2.js         0.23 KiB         0.17 KiB</span><br><span class="line">dist\css\chunk.element-ui.dbea684a.css    123.21 KiB       18.41 KiB</span><br><span class="line">dist\css\chunk.ant-design-vue.0e251fa4    31.62 KiB        4.43 KiB</span><br><span class="line">.css</span><br><span class="line">dist\css\main.5a138976.css                3.77 KiB         1.10 KiB</span><br></pre></td></tr></table></figure>
+<p>可以说是效果相当明显了，antd直接就给压缩到了32k，于是就可以把分包策略再改一改了，把比较可能产生变化的element-ui单独拿出来作为一个chunk，其他第三方库作为一个统一的chunk，这样可以提供非首次加载用户的本地缓存命中率，只需要改动webpack配置的name方法逻辑</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">name(module) &#123;</span><br><span class="line">                            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];</span><br><span class="line">                            if ( packageName.indexOf(&quot;element-ui&quot;) != -1 ) &#123;</span><br><span class="line">                                return &apos;chunk.element-ui&apos;;</span><br><span class="line">                            &#125; else &#123;</span><br><span class="line">                                return &apos;chunk.vendors&apos;;</span><br><span class="line">                            &#125;                         </span><br><span class="line">                        &#125;,</span><br></pre></td></tr></table></figure>
+<p>修改后打包得到的文件列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">File                                      Size             Gzipped</span><br><span class="line"></span><br><span class="line">dist\js\chunk.element-ui.6e23f077.js      257.04 KiB       61.32 KiB</span><br><span class="line">dist\js\chunk.vendors.a0611066.js         240.81 KiB       81.35 KiB</span><br><span class="line">dist\js\main.a9029da6.js                  89.00 KiB        9.97 KiB</span><br><span class="line">dist\runtime.18ae6b183bfbfbed66d9.js      1.48 KiB         0.71 KiB</span><br><span class="line">dist\css\chunk.element-ui.dbea684a.css    123.21 KiB       18.41 KiB</span><br><span class="line">dist\css\chunk.vendors.9d453f4b.css       31.62 KiB        4.43 KiB</span><br><span class="line">dist\css\main.5a138976.css                3.77 KiB         1.10 KiB</span><br></pre></td></tr></table></figure>
+<h2 id="多入口配置"><a href="#多入口配置" class="headerlink" title="多入口配置"></a>多入口配置</h2><p>基于此，想起来之前另一个react工程也有类似的问题，也依葫芦画瓢分析一把，react的webpack配置需要安装对应的依赖包<a href="https://github.com/timarney/react-app-rewired" target="_blank" rel="noopener">react-app-rewired</a>，然后修改config-overrides.js文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function override(config) &#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  config.optimization = &#123;</span><br><span class="line">    ...config.optimization,</span><br><span class="line">    runtimeChunk: &apos;single&apos;,</span><br><span class="line">    splitChunks: &#123;</span><br><span class="line">      chunks: &apos;all&apos;,</span><br><span class="line">      maxInitialRequests: Infinity,</span><br><span class="line">      minSize: 0,</span><br><span class="line">      cacheGroups: &#123;</span><br><span class="line">        vendor: &#123;</span><br><span class="line">          test: /[\\/]node_modules[\\/]/,</span><br><span class="line">          name(module) &#123;</span><br><span class="line">            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];</span><br><span class="line"></span><br><span class="line">            return `chunk.$&#123;packageName.replace(&apos;@&apos;, &apos;&apos;)&#125;`;</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>然后得到分包的输出结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line">File sizes after gzip:</span><br><span class="line"></span><br><span class="line">  84.27 KB            build\static\js\chunk.ol.6c49b241.chunk.js</span><br><span class="line">  69.51 KB            build\static\js\chunk.codemirror.cde7c54e.chunk.js</span><br><span class="line">  51.3 KB             build\static\js\chunk.material-ui.88079b29.chunk.js</span><br><span class="line">  39.62 KB            build\static\js\chunk.react-dom.0be5f8db.chunk.js</span><br><span class="line">  38.16 KB            build\static\js\chunk.ra-core.d9b7911d.chunk.js</span><br><span class="line">  29.95 KB            build\static\js\chunk.ra-ui-materialui.ba718a51.chunk.js</span><br><span class="line">  23.05 KB            build\static\js\chunk.react-admin-color-input.e88da086.chunk.js</span><br><span class="line">  22.56 KB            build\static\js\chunk.qiniu-js.a4c1cdcf.chunk.js</span><br><span class="line">  16.01 KB            build\static\js\chunk.react-color.f87b4091.chunk.js</span><br><span class="line">  12.53 KB            build\static\js\chunk.pretty-format.e226feec.chunk.js</span><br><span class="line">  11.63 KB            build\static\js\chunk.easymde.2c894284.chunk.js</span><br><span class="line">  10.01 KB            build\static\js\chunk.lodash.aa8cc043.chunk.js</span><br><span class="line">  9.32 KB (-2.87 KB)  build\static\js\main.723d3f0e.chunk.js</span><br><span class="line">  7.85 KB             build\static\js\chunk.marked.9561a2a9.chunk.js</span><br><span class="line">  7.21 KB             build\static\js\chunk.popper.js.57d79d17.chunk.js</span><br><span class="line">  6.65 KB             build\static\js\chunk.aria-query.5ee48286.chunk.js</span><br><span class="line">  6.2 KB              build\static\js\chunk.testing-library.f707b4d2.chunk.js</span><br><span class="line">  6.11 KB             build\static\js\chunk.redux-saga.4f05fdc3.chunk.js</span><br><span class="line">  5.76 KB             build\static\js\chunk.jss.7dfcb01a.chunk.js</span><br><span class="line">  5.67 KB             build\static\js\chunk.buffer.400cae46.chunk.js</span><br><span class="line">  5.56 KB             build\static\js\chunk.openlayers.b9ba0e3f.chunk.js</span><br><span class="line">  5.02 KB             build\static\js\chunk.tinycolor2.0152cc0d.chunk.js</span><br><span class="line">  4.9 KB              build\static\js\chunk.final-form.a2ed567f.chunk.js</span><br><span class="line">  4.06 KB             build\static\js\chunk.es-abstract.03d84b43.chunk.js</span><br><span class="line">  3.86 KB             build\static\js\chunk.react-redux.e044a5d4.chunk.js</span><br><span class="line">  3.68 KB             build\static\js\main~wechat.79f40213.01cf27ee.chunk.js</span><br><span class="line">  3.18 KB             build\static\js\chunk.inflection.eb2c32e8.chunk.js</span><br><span class="line">  3.13 KB             build\static\js\chunk.react-dropzone.5762be11.chunk.js</span><br><span class="line">  2.89 KB             build\static\js\chunk.history.b20e3aee.chunk.js</span><br><span class="line">  2.85 KB             build\static\js\chunk.react-final-form.e60b6236.chunk.js</span><br><span class="line">  2.85 KB             build\static\js\chunk.typo-js.95619217.chunk.js</span><br><span class="line">  2.69 KB             build\static\js\chunk.jsonexport.ff93d053.chunk.js</span><br><span class="line">  2.6 KB              build\static\css\chunk.easymde.e507eba4.chunk.css</span><br><span class="line">  2.59 KB             build\static\js\chunk.connected-react-router.91025c09.chunk.js</span><br><span class="line">  2.55 KB             build\static\js\chunk.react.233452ee.chunk.js</span><br><span class="line">  2.36 KB             build\static\js\chunk.rbush.90c04ace.chunk.js</span><br><span class="line">  2.31 KB             build\static\js\chunk.redux.fbae5c97.chunk.js</span><br><span class="line">  2.3 KB              build\static\js\chunk.regenerator-runtime.aaeb1a4e.chunk.js</span><br><span class="line">  2.08 KB             build\static\js\chunk.react-transition-group.7ee1fd23.chunk.js</span><br><span class="line">  1.95 KB             build\static\js\chunk.material-colors.557115a5.chunk.js</span><br><span class="line">  1.91 KB             build\static\js\chunk.scheduler.0dec7080.chunk.js</span><br><span class="line">  1.86 KB             build\static\js\chunk.react-simplemde-editor.a90621b2.chunk.js</span><br><span class="line">  1.84 KB             build\static\js\chunk.react-router.829aa729.chunk.js</span><br><span class="line">  1.83 KB             build\static\js\chunk.css-vendor.eb5a54d1.chunk.js</span><br><span class="line">  1.75 KB             build\static\js\chunk.reactcss.d9b3bf2f.chunk.js</span><br><span class="line">  1.75 KB             build\static\js\chunk.lodash.get.dd9db41b.chunk.js</span><br><span class="line">  1.58 KB             build\static\js\chunk.ra-language-chinese.10c431b8.chunk.js</span><br><span class="line">  1.52 KB             build\static\js\chunk.sheerun.a70752b9.chunk.js</span><br><span class="line">  1.5 KB              build\static\js\chunk.path-to-regexp.fc22d238.chunk.js</span><br><span class="line">  1.5 KB              build\static\js\chunk.node-polyglot.2f122d25.chunk.js</span><br><span class="line">  1.47 KB             build\static\js\chunk.query-string.04ad72fd.chunk.js</span><br><span class="line">  1.46 KB             build\static\js\chunk.ra-language-english.67254965.chunk.js</span><br><span class="line">  1.41 KB             build\static\js\chunk.babel-preset-react-app.d30faa3e.chunk.js</span><br><span class="line">  1.4 KB              build\static\js\chunk.final-form-arrays.24364da7.chunk.js</span><br><span class="line">  1.39 KB             build\static\js\chunk.recompose.5a045c3f.chunk.js</span><br><span class="line">  1.2 KB              build\static\js\chunk.loglevel.933b7b7e.chunk.js</span><br><span class="line">  1.19 KB             build\static\js\chunk.react-router-dom.dab4e8f1.chunk.js</span><br><span class="line">  1.18 KB             build\static\js\chunk.file-selector.e9531dac.chunk.js</span><br><span class="line">  1.18 KB             build\static\js\chunk.babel.39089000.chunk.js</span><br><span class="line">  1.08 KB             build\static\js\chunk.date-fns.3ddb3bc5.chunk.js</span><br><span class="line">  1.06 KB             build\static\js\chunk.eventemitter3.5c2090de.chunk.js</span><br><span class="line">  983 B               build\static\js\chunk.object-keys.48b9c6ce.chunk.js</span><br><span class="line">  973 B               build\static\js\chunk.jss-plugin-default-unit.0195203b.chunk.js</span><br><span class="line">  926 B               build\static\js\chunk.tslib.7e9561da.chunk.js</span><br><span class="line">  824 B               build\static\js\chunk.mini-create-react-context.da644b0f.chunk.js</span><br><span class="line">  806 B               build\static\js\chunk.reselect.3ce0305f.chunk.js</span><br><span class="line">  805 B               build\static\js\chunk.base64-js.77bf602a.chunk.js</span><br><span class="line">  804 B               build\static\js\chunk.react-is.cf746209.chunk.js</span><br><span class="line">  770 B               build\static\js\chunk.codemirror-spell-checker.fb2d4fc7.chunk.js</span><br><span class="line">  761 B               build\static\js\chunk.jss-plugin-global.1a65138f.chunk.js</span><br><span class="line">  756 B               build\static\js\chunk.process.5ab7aff6.chunk.js</span><br><span class="line">  746 B               build\static\js\chunk.react-admin.764cfd97.chunk.js</span><br><span class="line">  746 B               build\static\js\runtime.1e297267.js</span><br><span class="line">  614 B               build\static\js\chunk.icons.89777078.chunk.js</span><br><span class="line">  586 B               build\static\js\chunk.jss-plugin-nested.c6bc094c.chunk.js</span><br><span class="line">  586 B               build\static\js\chunk.object-assign.9b6ef571.chunk.js</span><br><span class="line">  569 B               build\static\js\chunk.decode-uri-component.8f3861ab.chunk.js</span><br><span class="line">  561 B               build\static\js\chunk.ieee754.be4eac64.chunk.js</span><br><span class="line">  553 B               build\static\js\chunk.hoist-non-react-statics.ad71935f.chunk.js</span><br><span class="line">  538 B               build\static\js\chunk.ra-i18n-polyglot.4ad09dd1.chunk.js</span><br><span class="line">  529 B               build\static\js\chunk.prop-types.37adbc95.chunk.js</span><br><span class="line">  518 B (-3.43 KB)    build\static\js\wechat.79f40213.3e23a8d8.chunk.js</span><br><span class="line">  508 B               build\static\js\chunk.normalize-scroll-left.c18007b5.chunk.js</span><br><span class="line">  508 B               build\static\js\chunk.attr-accept.4f82d5c7.chunk.js</span><br><span class="line">  477 B               build\static\js\chunk.define-properties.5d0b265d.chunk.js</span><br><span class="line">  477 B               build\static\js\chunk.has-symbols.58c64948.chunk.js</span><br><span class="line">  473 B               build\static\js\chunk.string.prototype.trim.60ccf6ca.chunk.js</span><br><span class="line">  471 B               build\static\js\chunk.function-bind.73a01976.chunk.js</span><br><span class="line">  452 B               build\static\js\chunk.wait-for-expect.342f7cf0.chunk.js</span><br><span class="line">  446 B               build\static\js\chunk.resolve-pathname.1a35cae1.chunk.js</span><br><span class="line">  427 B               build\static\js\chunk.es-to-primitive.5a3e4a30.chunk.js</span><br><span class="line">  390 B               build\static\js\chunk.jss-plugin-vendor-prefixer.90e53b70.chunk.js</span><br><span class="line">  368 B               build\static\js\chunk.jss-plugin-rule-value-function.dbd7eeb2.chunk.js</span><br><span class="line">  367 B               build\static\js\chunk.change-emitter.910274e1.chunk.js</span><br><span class="line">  365 B               build\static\js\chunk.webpack.02d08169.chunk.js</span><br><span class="line">  364 B               build\static\js\chunk.for-each.42258c7b.chunk.js</span><br><span class="line">  358 B               build\static\js\chunk.classnames.0e67c5d0.chunk.js</span><br><span class="line">  348 B               build\static\js\chunk.jss-plugin-camel-case.2b21a29d.chunk.js</span><br><span class="line">  346 B               build\static\js\chunk.is-callable.75d4870b.chunk.js</span><br><span class="line">  335 B               build\static\js\chunk.invariant.4334bd5b.chunk.js</span><br><span class="line">  321 B               build\static\js\chunk.value-equal.f6392b61.chunk.js</span><br><span class="line">  315 B               build\static\js\chunk.fbjs.3ef0c11d.chunk.js</span><br><span class="line">  310 B               build\static\js\chunk.symbol-observable.858c5c03.chunk.js</span><br><span class="line">  289 B               build\static\js\chunk.clsx.c7728ae6.chunk.js</span><br><span class="line">  268 B               build\static\js\chunk.is-in-browser.f57fcd0e.chunk.js</span><br><span class="line">  266 B               build\static\js\chunk.split-on-first.5b8d94bd.chunk.js</span><br><span class="line">  256 B               build\static\js\chunk.jss-plugin-props-sort.897b6dc3.chunk.js</span><br><span class="line">  232 B               build\static\js\chunk.hyphenate-style-name.20142260.chunk.js</span><br><span class="line">  218 B               build\static\js\chunk.tiny-warning.7ffaad56.chunk.js</span><br><span class="line">  218 B               build\static\js\chunk.strict-uri-encode.d55fcdde.chunk.js</span><br><span class="line">  194 B               build\static\js\chunk.gud.8f3c4f90.chunk.js</span><br><span class="line">  186 B               build\static\js\chunk.tiny-invariant.1c87f7a1.chunk.js</span><br><span class="line">  178 B               build\static\js\chunk.has.501bd54b.chunk.js</span><br><span class="line">  171 B               build\static\js\chunk.isarray.179afdd1.chunk.js</span><br><span class="line">  143 B               build\static\js\chunk.warning.4588dba4.chunk.js</span><br><span class="line">  104 B               build\static\css\chunk.react-admin-color-input.198dddac.chunk.css</span><br></pre></td></tr></table></figure>
+<p>这个工程同时服务于PC端跟微信公众号，而在微信公众号上其实只有2个简单的页面，并不需要用到这么多的依赖，所以首先的优化点就是将微信的入口（entry）单独拆分出来，需要用到新的开发依赖<a href="https://github.com/Derek-Hu/react-app-rewire-multiple-entry" target="_blank" rel="noopener">react-app-rewire-multiple-entry</a>，然后修改配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">const multipleEntry = require(&apos;react-app-rewire-multiple-entry&apos;)([</span><br><span class="line">  &#123;</span><br><span class="line">    entry: &apos;src/entry/wechat.tsx&apos;,</span><br><span class="line">    template: &apos;public/wechat.html&apos;,</span><br><span class="line">    outPath: &apos;/wechat.html&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">module.exports = function override(config) &#123;</span><br><span class="line"></span><br><span class="line">   ...</span><br><span class="line">   multipleEntry.addMultiEntry(config);</span><br><span class="line">   ...</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最终打包得到的文件如下，可以发现多了很多数字开头的chunk，webpack会自动分析不同入口的依赖以对chunk进行切分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">File sizes after gzip:</span><br><span class="line"></span><br><span class="line">  434.59 KB            build\static\js\5.e9065b4b.chunk.js</span><br><span class="line">  117.82 KB            build\static\js\0.c845b199.chunk.js</span><br><span class="line">  12.19 KB (+2.87 KB)  build\static\js\main.d4ac2a7d.chunk.js</span><br><span class="line">  3.94 KB (+3.43 KB)   build\static\js\wechat.79f40213.63b7857a.chunk.js</span><br><span class="line">  2.63 KB              build\static\css\5.01a907c6.chunk.css</span><br><span class="line">  745 B                build\static\js\runtime-main.5e6b2859.js</span><br><span class="line">  745 B                build\static\js\runtime-wechat.79f40213.1c8b1700.js</span><br></pre></td></tr></table></figure>
+<h2 id="组件懒加载"><a href="#组件懒加载" class="headerlink" title="组件懒加载"></a>组件懒加载</h2><p>通过入口的切分，微信端的问题是解决了，可PC端的问题依然存在，其中一个体积靠前的包是codemirror，一个富编辑器组件，但其实用到的只有2个页面，绝大部分页面并不需要用上，可是即使进行手工指定的chunk切分，也依然会在进入第一个页面的时候就进行加载，所以这里就需要用到react v16.6的新特性懒加载了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; lazy, Suspense &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> MarkdownInput = lazy(<span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">"@/components/MarkdownInput"</span>));</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WordEdit</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span>&lt;<span class="title">any</span>, <span class="title">any</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  fallback = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;Loading...&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  render() &#123;</span></span><br><span class="line"><span class="regexp">    return (</span></span><br><span class="line"><span class="regexp">     ...</span></span><br><span class="line"><span class="regexp">          &lt;Suspense fallback=&#123;this.fallback()&#125;&gt;</span></span><br><span class="line"><span class="regexp">            &lt;MarkdownInput</span></span><br><span class="line"><span class="regexp">              source="content"</span></span><br><span class="line"><span class="regexp">              label=""</span></span><br><span class="line"><span class="regexp">              validate=&#123;[required()]&#125;</span></span><br><span class="line"><span class="regexp">            /</span>&gt;</span><br><span class="line">          &lt;<span class="regexp">/Suspense&gt;</span></span><br><span class="line"><span class="regexp">     ...</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">  ...</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>通过lazy-suspense的组合，就能够实现只有在当前页面被渲染时，才会第一次对依赖文件进行加载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">File sizes after gzip:</span><br><span class="line"></span><br><span class="line">  341.03 KB            build\static\js\7.683cff2d.chunk.js</span><br><span class="line">  117.81 KB            build\static\js\0.b6431874.chunk.js</span><br><span class="line">  92.71 KB             build\static\js\1.b33bd2fd.chunk.js</span><br><span class="line">  11.99 KB (+2.68 KB)  build\static\js\main.474f9f9f.chunk.js</span><br><span class="line">  3.93 KB (+3.43 KB)   build\static\js\wechat.79f40213.99dfb5a8.chunk.js</span><br><span class="line">  2.6 KB               build\static\css\1.e507eba4.chunk.css</span><br><span class="line">  1.46 KB              build\static\js\runtime-main.beea653e.js</span><br><span class="line">  744 B                build\static\js\runtime-wechat.79f40213.f5287610.js</span><br><span class="line">  598 B                build\static\js\2.3a0a229a.chunk.js</span><br><span class="line">  104 B                build\static\css\7.198dddac.chunk.css</span><br></pre></td></tr></table></figure>
+<p>以上是将组件修改为懒加载后的分包情况，可以发现，又多出了一些chunk</p>
+<h2 id="import-动态引入"><a href="#import-动态引入" class="headerlink" title="import()动态引入"></a>import()动态引入</h2><p>最后要解决另一个体积比较大的包ol，这是一个地图工具包，本身不像UI组件库提供了按需引入的方式，也不像一个react的组件可以进行按需引入，所以就涉及到动态引入的概念了，这里是使用一个静态类对ol做了一层封装，最后改造如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> MapEdit = <span class="function">(<span class="params">props: any</span>) =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">    useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">     ...</span><br><span class="line">     <span class="comment">// 所有需要用到地图工具类的地方都用import()包装一层</span></span><br><span class="line">     <span class="keyword">import</span>(<span class="string">"@/utils/MapHelper"</span>).then(<span class="function">(<span class="params">MapHelper: any</span>) =&gt;</span> &#123;</span><br><span class="line">         ...</span><br><span class="line">         MapHelper.default.xxx();</span><br><span class="line">         ...</span><br><span class="line">     &#125;</span><br><span class="line">     ...</span><br><span class="line">    &#125;, [map]);    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>针对所有可以懒加载、动态引入的代码进行处理后再来看看打包情况</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">File sizes after gzip:</span><br><span class="line"></span><br><span class="line">  118.11 KB              build\static\js\17.a9eb382a.chunk.js</span><br><span class="line">  100.62 KB              build\static\js\18.1d829a41.chunk.js</span><br><span class="line">  95.06 KB               build\static\js\8.d070d1df.chunk.js</span><br><span class="line">  93.94 KB               build\static\js\16.640ff7f2.chunk.js</span><br><span class="line">  93.11 KB (-149.37 KB)  build\static\js\9.61e74371.chunk.js</span><br><span class="line">  91.56 KB               build\static\js\5.c3148b97.chunk.js</span><br><span class="line">  22.57 KB               build\static\js\42.f2fefa65.chunk.js</span><br><span class="line">  10.5 KB (+9.92 KB)     build\static\js\4.b559bdcd.chunk.js</span><br><span class="line">  8.59 KB (+6.18 KB)     build\static\js\1.61841ee3.chunk.js</span><br><span class="line">  7.63 KB (-84.94 KB)    build\static\js\3.908c3785.chunk.js</span><br><span class="line">  7.11 KB (-2.7 KB)      build\static\js\main.71c915fc.chunk.js</span><br><span class="line">  6.1 KB                 build\static\js\19.de1d6360.chunk.js</span><br><span class="line">  5.72 KB (-90.3 KB)     build\static\js\2.f96bb738.chunk.js</span><br><span class="line">  5.41 KB                build\static\js\7.a411e74e.chunk.js</span><br><span class="line">  5.08 KB                build\static\js\20.a71d9383.chunk.js</span><br><span class="line">  4.29 KB (-87.52 KB)    build\static\js\0.9cead90e.chunk.js</span><br><span class="line">  3.94 KB (-8 B)         build\static\js\wechat.79f40213.1a92a171.chunk.js</span><br><span class="line">  3.86 KB                build\static\js\21.7614d60e.chunk.js</span><br><span class="line">  3.42 KB (+597 B)       build\static\js\10.f51ec5a7.chunk.js</span><br><span class="line">  3.12 KB                build\static\js\25.a7422a63.chunk.js</span><br><span class="line">  2.6 KB (+2.5 KB)       build\static\css\9.e507eba4.chunk.css</span><br><span class="line">  2.42 KB                build\static\js\6.55f3ef2b.chunk.js</span><br><span class="line">  2.38 KB                build\static\js\22.49a7800f.chunk.js</span><br><span class="line">  1.96 KB                build\static\js\24.6af9414c.chunk.js</span><br><span class="line">  1.87 KB (+340 B)       build\static\js\runtime-main.9ed5ec8a.js</span><br><span class="line">  1.55 KB                build\static\js\23.866bbcf4.chunk.js</span><br><span class="line">  1.14 KB                build\static\js\runtime-wechat.79f40213.39bfa3d0.js</span><br><span class="line">  715 B                  build\static\js\27.50be8cd5.chunk.js</span><br><span class="line">  604 B (+194 B)         build\static\js\11.787754a0.chunk.js</span><br><span class="line">  482 B                  build\static\js\41.34b0df64.chunk.js</span><br><span class="line">  475 B                  build\static\js\26.8e4df89e.chunk.js</span><br><span class="line">  439 B                  build\static\js\32.3e8eafab.chunk.js</span><br><span class="line">  439 B                  build\static\js\31.918c0125.chunk.js</span><br><span class="line">  434 B                  build\static\js\40.827efc5b.chunk.js</span><br><span class="line">  429 B                  build\static\js\30.9389c44c.chunk.js</span><br><span class="line">  423 B                  build\static\js\36.0cfca1fa.chunk.js</span><br><span class="line">  422 B                  build\static\js\29.477699f4.chunk.js</span><br><span class="line">  412 B                  build\static\js\28.309fbb6b.chunk.js</span><br><span class="line">  391 B                  build\static\js\33.ba9c1dbe.chunk.js</span><br><span class="line">  355 B                  build\static\js\38.9728699e.chunk.js</span><br><span class="line">  344 B                  build\static\js\37.c3aec284.chunk.js</span><br><span class="line">  325 B                  build\static\js\34.d52c54fc.chunk.js</span><br><span class="line">  276 B                  build\static\js\39.ec6d94f0.chunk.js</span><br><span class="line">  265 B                  build\static\js\35.5fe1ff75.chunk.js</span><br><span class="line">  104 B                  build\static\css\18.198dddac.chunk.css</span><br><span class="line">  104 B                  build\static\css\17.198dddac.chunk.css</span><br></pre></td></tr></table></figure>
+<p>一下就多出来好几十个文件，来看看最终的加载效果，直接干掉了一个3M多的大包，虽然受制于带宽还是稍显有点儿慢，但比起过去等上1-2分钟已经是质的飞跃了。<br><img src="/2020/02/05/improve-performance-of-spa-by-bundle-config/first_load.png" alt="最终效果"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+            <a href="/tags/React/" rel="tag"># React</a>
+          
+            <a href="/tags/webpack/" rel="tag"># webpack</a>
+          
+            <a href="/tags/性能/" rel="tag"># 性能</a>
+          
+            <a href="/tags/动态import/" rel="tag"># 动态import()</a>
+          
+            <a href="/tags/组件懒加载/" rel="tag"># 组件懒加载</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/31/replace-raspberry-pi-with-old-laptop/" rel="next" title="使用老旧笔记本替代树莓派搭建家庭服务器">
+                <i class="fa fa-chevron-left"></i> 使用老旧笔记本替代树莓派搭建家庭服务器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="chenyong">
+          <p class="site-author-name" itemprop="name">chenyong</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">94</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析解决"><span class="nav-number">2.</span> <span class="nav-text">分析解决</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#针对第三方包切分chunk"><span class="nav-number">2.1.</span> <span class="nav-text">针对第三方包切分chunk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#按需加载"><span class="nav-number">2.2.</span> <span class="nav-text">按需加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多入口配置"><span class="nav-number">2.3.</span> <span class="nav-text">多入口配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件懒加载"><span class="nav-number">2.4.</span> <span class="nav-text">组件懒加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#import-动态引入"><span class="nav-number">2.5.</span> <span class="nav-text">import()动态引入</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenyong</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
