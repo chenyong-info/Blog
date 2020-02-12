@@ -103,7 +103,7 @@
 <meta property="og:image" content="http://blog.saubcy.com/2020/02/11/collaboration-with-live-share/cmd.png">
 <meta property="og:image" content="http://blog.saubcy.com/2020/02/11/collaboration-with-live-share/server.png">
 <meta property="og:image" content="http://blog.saubcy.com/2020/02/11/collaboration-with-live-share/demo.png">
-<meta property="og:updated_time" content="2020-02-11T13:05:10.598Z">
+<meta property="og:updated_time" content="2020-02-11T13:19:43.820Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Live Share辅助远程办公">
 <meta name="twitter:description" content="背景在疫情拐点仍无明确时间预期的2月中，原本预计1周的远程办公时间延长到了2周、甚至还有可能要贯穿整个2月，于是乎之前以为忍一忍拖到现场复工再处理的事情也不好再拖下去了。  公司响应倒是及时，VPN很快给开了起来，借助小鱼易连、微信语音每天的远程会议也是开的很欢，唯一有一点不方便的就是在代码交接上的沟通效率，之前大家都在一个屋子里，有什么事吼一嗓子人过来，对着屏幕上的代码演示讲解一遍很快就明白了，">
@@ -402,10 +402,10 @@
 <h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p><img src="/2020/02/11/collaboration-with-live-share/liveshare.png" alt="Visual Studio Live Share"></p>
 <p>昨晚在看vscode相关介绍的时候偶然发现了一个叫做<a href="https://visualstudio.microsoft.com/zh-hans/services/live-share/" target="_blank" rel="noopener">Visual Studio Live Share</a>的东西，功能上似乎完美契合需求。</p>
 <p><img src="/2020/02/11/collaboration-with-live-share/free.png" alt="免费使用"></p>
-<p>特别难能可贵的是做完18年推出的功能，现在依然在免费推广试用阶段。</p>
+<p>特别难能可贵的是做为18年推出的功能，现在依然在免费推广试用阶段。</p>
 <h2 id="插件安装"><a href="#插件安装" class="headerlink" title="插件安装"></a>插件安装</h2><p>直接在vscode的插件管理中搜索“<a href="https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare-pack" target="_blank" rel="noopener">Live Share Extension Pack</a>”进行安装，然后使用微软或是github账号进行登录就可以开始使用了。</p>
 <h2 id="开始分享"><a href="#开始分享" class="headerlink" title="开始分享"></a>开始分享</h2><p><img src="/2020/02/11/collaboration-with-live-share/start.png" alt="开始分享"></p>
-<p>打开需要分享的项目后，在live share的面板开始一个协作会话，可以得到一个类似<a href="https://prod.liveshare.vsengsaas.visualstudio.com/join?xxxxxx的加入链接，对方在浏览器中打开链接，就能自动拉起本地的vscode加入了。" target="_blank" rel="noopener">https://prod.liveshare.vsengsaas.visualstudio.com/join?xxxxxx的加入链接，对方在浏览器中打开链接，就能自动拉起本地的vscode加入了。</a></p>
+<p>打开需要分享的项目后，在live share的面板开始一个协作会话，可以得到一个类似 <a href="https://prod.liveshare.vsengsaas.visualstudio.com/join?xxxxxx" target="_blank" rel="noopener">https://prod.liveshare.vsengsaas.visualstudio.com/join?xxxxxx</a> 的加入链接，对方在浏览器中打开链接，就能自动拉起本地的vscode加入了。</p>
 <p><img src="/2020/02/11/collaboration-with-live-share/users.png" alt="参与者列表"></p>
 <p>对方加入后可以在参与者列表中查看到，也可以自由选择一个参与者的屏幕进行关注（默认情况下所有参与者都是关注分享者的代码界面），这样被关注者打开的代码窗口、光标位置都能进行实时展示。</p>
 <h2 id="远程bug定位"><a href="#远程bug定位" class="headerlink" title="远程bug定位"></a>远程bug定位</h2><p><img src="/2020/02/11/collaboration-with-live-share/cmd.png" alt="共享本地命令行"></p>
@@ -490,6 +490,8 @@
 
           
   <div class="comments" id="comments">
+    
+      <div id="gitalk-container"></div>
     
   </div>
 
@@ -746,6 +748,30 @@
 
 
 
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'f2ec6730a6a6cd8be8b6',
+          clientSecret: '10fda469873143bf4bc57e1a8202364e15d5be85',
+          repo: 'gitalk',
+          owner: 'chenyong',
+          admin: ['saubcy'],
+          id: location.pathname,
+          labels: ['Gitalk'],
+          perPage: 15,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        })
+        gitalk.render('gitalk-container')           
+       </script>
 
 
 
