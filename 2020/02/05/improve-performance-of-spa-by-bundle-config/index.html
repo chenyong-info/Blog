@@ -515,7 +515,24 @@
           
   <div class="comments" id="comments">
     
-      <div id="gitalk-container"></div>
+      <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="/js/src/md5.min.js"></script>
+<script type="text/javascript">
+	var gitalk = new Gitalk({
+          clientID: 'f2ec6730a6a6cd8be8b6',
+          clientSecret: '',
+          repo: 'gitalk',
+          owner: '',
+          admin: ['['chenyong-info']'],
+          id: md5(location.pathname),
+          perPage: 15,
+          pagerDirection: 'last',
+  				createIssueManually: false,
+  				distractionFreeMode: false,
+        })
+        gitalk.render('gitalk-container')
+ </script> 
     
   </div>
 
