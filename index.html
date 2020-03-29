@@ -281,6 +281,172 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/03/29/communication-in-quickapp-web/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2020/03/29/communication-in-quickapp-web/" itemprop="url">
+                  快应用平台下的h5通讯方案
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-29T17:57:06+08:00">
+                2020-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/03/29/communication-in-quickapp-web/" class="leancloud_visitors" data-flag-title="快应用平台下的h5通讯方案">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>快应用这个平台吧，作为当年国内手机厂商联合起来对抗微信小程序的核战略武器，阵势上无比之大，毕竟除开卖手机硬件的收益外，承载APP分发渠道的应用市场也是一块巨大肥肉，谁都担心才从豌豆荚、360手机市场手上抢来的肉转头又被微信给叼走了，不过好在张小龙一直没跨出这一步，号称：“不做应用商店”、“不做推荐”、“用完即走”。</p>
+<p><img src="/2020/03/29/communication-in-quickapp-web/legend.jpeg" alt="五岳剑派"></p>
+<p>所以快应用这个平台慢慢也就变成了俄罗斯的航母，仅限于有、却很难说有多大用。联盟的状态则有点儿类似于五岳剑派：</p>
+<ul>
+<li>vivo是嵩山派，无论在论坛上、还是开源组件库方面都最为活跃；</li>
+<li>华为是华山派，处于听调不听宣的状态，名义上同属快应用联盟，但是从加载器到API实现方案都跟联盟其他厂家不一致；</li>
+</ul>
+<p>所以对于这样的平台，前期在不明确效果的情况下建议是以hybird方式试水，只做一层薄薄的通讯层，等到后面验证效果后再加大投入。</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>前面说了这么多快应用的背景，其实就是想表达，虽然快应用有一套联盟标准，但因为没有统一的主导力量，所以接口完成度、文档丰富程度都很堪忧，像是早期的快应用与页面通讯就只能通过<a href="https://bbs.quickapp.cn/forum.php?mod=viewthread&amp;tid=870" target="_blank" rel="noopener">hack的方式</a>完成，新版下虽然官方已经支持了更为优雅的方式，但在<a href="https://doc.quickapp.cn/widgets/web.html" target="_blank" rel="noopener">文档上</a>却让人看的一头雾水。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/03/29/communication-in-quickapp-web/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/02/11/collaboration-with-live-share/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1715,166 +1881,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/11/03/devops-with-raspberry-pi/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chenyong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="想啥侃啥">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/11/03/devops-with-raspberry-pi/" itemprop="url">
-                  用树莓派构建生产发布系统
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-03T21:11:39+08:00">
-                2019-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">开发笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/11/03/devops-with-raspberry-pi/" class="leancloud_visitors" data-flag-title="用树莓派构建生产发布系统">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><center><img src="/2019/11/03/devops-with-raspberry-pi/1.png" alt="Jenkins"></center><br>事情的起因是最近手上拆出来的项目越来越多，每次花费在打包等待、ftp上传、文件部署上的时间越发的难以忽略了，刚好手上还有个闲置的树莓派3B</p>
-<p><img src="/2019/11/03/devops-with-raspberry-pi/2.jpg" alt="raspberry-pi">  </p>
-<p>就是上面左边这货，1C1G的配置渣是渣了点儿，不过闲着也是闲着</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/03/devops-with-raspberry-pi/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1922,7 +1928,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1944,7 +1950,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">96</span>
+                <span class="site-state-item-count">99</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
