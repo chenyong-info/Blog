@@ -281,6 +281,168 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/11/17/refactoring-vue-2-ssr-by-nuxt/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/" itemprop="url">
+                  通过Nuxt将Vue项目改造为SSR
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-17T14:13:28+08:00">
+                2019-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/" class="leancloud_visitors" data-flag-title="通过Nuxt将Vue项目改造为SSR">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>为了更好的享受现代化前端开发框架的乐趣，前一阵把官网给用Vue重写了，开发效率上确实一下子提升了一大截，但是过了一阵用百度一搜，emmm……</p>
+<p><img src="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/baidu.jpg" alt="百度"></p>
+<p>对比一下别人家的，虽然不能像百度RMB玩家那样还有站点图标，但好歹描述信息要靠谱点儿把。</p>
+<p><img src="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/conan.jpg" alt="名侦探柯南事务所"></p>
+<p>总结起来了就是，现在的搜索引擎爬虫对于客户端渲染的站点都不是太友好，没办法获取到ajax拉取回来的动态内容，解决方案嘛就是得把页面的渲染逻辑再拿回服务端，让地址直接导出的就是最终渲染结果了，在Vue的架构下大致是三种：<br>1、 用插件的形式进行预渲染，比如：<a href="https://github.com/chrisvfritz/prerender-spa-plugin" target="_blank" rel="noopener">prerender-spa-plugin</a>，简单倒是简单，不过最终生成的页面没法儿展示接口获取的动态数据；<br>2、 使用<a href="https://ssr.vuejs.org/zh/guide/#%E5%AE%89%E8%A3%85" target="_blank" rel="noopener">Vue官方的SSR方案</a>，尝试一阵把代码结构改的乱七八糟后，放弃……<br>3、 基于<a href="https://github.com/nuxt/nuxt.js" target="_blank" rel="noopener">NUXTJS的方案</a>，相对来说功能齐备，改造成本最低的一套。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/11/17/refactoring-vue-2-ssr-by-nuxt/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/11/06/telecom-ad-injection-analysis/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1728,165 +1890,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2018/11/14/editor-system-base-work-weixin/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chenyong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="想啥侃啥">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/11/14/editor-system-base-work-weixin/" itemprop="url">
-                  基于企业微信快速搭建后台编辑系统
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-14T22:33:57+08:00">
-                2018-11-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">开发笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/11/14/editor-system-base-work-weixin/" class="leancloud_visitors" data-flag-title="基于企业微信快速搭建后台编辑系统">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>&emsp;&emsp;针对小、微型企业来说，IT往往只是辅助工具，或许全公司也就那么一个系统开发，当公司业务量上升，碰到人工效率天花板的时候，直接面向客户的业务系统开发又必须是优先于面向内部员工的编辑系统的，所以前期一些数据运营性工作就只能先找现成系统，如：phpMyAdmin, Adminer之类来直接暴露数据库勉强用着了。<br>&emsp;&emsp;不过这种方式快倒是快，可直接暴露在公网上的东西，并且还是开源的，保不齐哪天一不留神来个授权漏洞公司数据可就尴尬了……<br>&emsp;&emsp;所以企业微信这个东西吧，虽然以前一直不理解都有微信了干嘛还搞一企业版，现在看来也还是能解决一部分人群现实问题的，至少基于它的OAuth2加道系统访问的闸门，即使访问入口暴露在官网上也是放心多了。</p>
-<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h2 id="方案说明"><a href="#方案说明" class="headerlink" title="方案说明"></a>方案说明</h2>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/11/14/editor-system-base-work-weixin/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1934,7 +1937,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">45</span>
+                <span class="site-state-item-count">46</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1956,7 +1959,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">102</span>
+                <span class="site-state-item-count">104</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

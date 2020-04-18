@@ -1,0 +1,915 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="树莓派,RaspberryPi,OpenWrt,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="背景最近一阵发现在Windows机器上采用廉价网卡B-LINK BL-LW05-5R2分享热点的形式越发的不稳定了：  在长时间没有连接的情况下热点经常会自动关闭（最近因为yq缘故大家坐的比较开，类似现象就更明显了） 之前找到Windows上的dhcp服务器也不是太稳定，时不时会出现无线信号正常，但是无法获取ip地址的情况，需要重新配置启动服务  之前偶尔出现还能忍忍，不过最近已经频繁到有些影响工">
+<meta name="keywords" content="树莓派,RaspberryPi,OpenWrt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智能路由树莓派再上岗">
+<meta property="og:url" content="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="背景最近一阵发现在Windows机器上采用廉价网卡B-LINK BL-LW05-5R2分享热点的形式越发的不稳定了：  在长时间没有连接的情况下热点经常会自动关闭（最近因为yq缘故大家坐的比较开，类似现象就更明显了） 之前找到Windows上的dhcp服务器也不是太稳定，时不时会出现无线信号正常，但是无法获取ip地址的情况，需要重新配置启动服务  之前偶尔出现还能忍忍，不过最近已经频繁到有些影响工">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/openwrt.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/image.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/admin.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/scan.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/setting.png">
+<meta property="og:updated_time" content="2020-04-18T12:57:56.653Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="智能路由树莓派再上岗">
+<meta name="twitter:description" content="背景最近一阵发现在Windows机器上采用廉价网卡B-LINK BL-LW05-5R2分享热点的形式越发的不稳定了：  在长时间没有连接的情况下热点经常会自动关闭（最近因为yq缘故大家坐的比较开，类似现象就更明显了） 之前找到Windows上的dhcp服务器也不是太稳定，时不时会出现无线信号正常，但是无法获取ip地址的情况，需要重新配置启动服务  之前偶尔出现还能忍忍，不过最近已经频繁到有些影响工">
+<meta name="twitter:image" content="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/openwrt.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/">
+
+
+
+
+
+  <title> 智能路由树莓派再上岗 | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                智能路由树莓派再上岗
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-18T19:54:06+08:00">
+                2020-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/04/18/router-with-raspberry-pi/" class="leancloud_visitors" data-flag-title="智能路由树莓派再上岗">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>最近一阵发现在Windows机器上采用廉价网卡<a href="https://item.jd.com/5160296.html" target="_blank" rel="noopener">B-LINK BL-LW05-5R2</a>分享热点的形式越发的不稳定了：</p>
+<ul>
+<li>在长时间没有连接的情况下热点经常会自动关闭（最近因为yq缘故大家坐的比较开，类似现象就更明显了）</li>
+<li>之前找到<a href="https://www.dhcpserver.de/cms/" target="_blank" rel="noopener">Windows上的dhcp服务器</a>也不是太稳定，时不时会出现无线信号正常，但是无法获取ip地址的情况，需要重新配置启动服务</li>
+</ul>
+<p>之前偶尔出现还能忍忍，不过最近已经频繁到有些影响工作效率了，于是就动了入手个路由器的想法。</p>
+<p>不过网上一搜，最便宜、号称电子垃圾的腾达 F3都要39¥了，然后没苏宁会员还不包邮……</p>
+<p>想着既然都要花钱了，干脆就整个好点儿的吧，又盯上了最近比较火的华为AX3丐版，不过无奈处于预定状态还有一周多才能发货……</p>
+<p><img src="/2020/04/18/router-with-raspberry-pi/openwrt.png" alt="OpenWrt"></p>
+<p>然后突然想起来，抽屉里不是还躺着个<a href="/2020/01/31/replace-raspberry-pi-with-old-laptop/">前一阵被替换下来</a>吃灰的树莓派嘛，一搜还有官方OpenWrt镜像支持，于是说干就干。</p>
+<a id="more"></a>
+<h1 id="镜像刷入"><a href="#镜像刷入" class="headerlink" title="镜像刷入"></a>镜像刷入</h1><p>树莓派最大的特点就是镜像刷入简单，首先在<a href="https://openwrt.org/toh/views/toh_fwdownload" target="_blank" rel="noopener">OpenWrt的官网</a>找到对应型号的镜像下载</p>
+<p><img src="/2020/04/18/router-with-raspberry-pi/image.png" alt="OpenWrt"></p>
+<p>解压用使用<a href="https://balena.io/etcher/" target="_blank" rel="noopener">Etcher</a>写入镜像文件至tf卡</p>
+<h1 id="启动配置"><a href="#启动配置" class="headerlink" title="启动配置"></a>启动配置</h1><p>将tf卡插入树莓派，然后用网线将电脑跟树莓派进行连接，接着就可以通过 <a href="http://192.168.1.1" target="_blank" rel="noopener">http://192.168.1.1</a> 进入管理设置界面了</p>
+<h2 id="管理员密码设置"><a href="#管理员密码设置" class="headerlink" title="管理员密码设置"></a>管理员密码设置</h2><p>默认的密码为空，可以根据首次进入时的引导进行初始密码设置</p>
+<p><img src="/2020/04/18/router-with-raspberry-pi/admin.png" alt="OpenWrt"></p>
+<p>密码设置好后，就可以通过ssh进行登录了，用户名是root，密码就是刚刚设置的</p>
+<h2 id="外网连接"><a href="#外网连接" class="headerlink" title="外网连接"></a>外网连接</h2><p>在 Network –&gt; wireless 中扫描本地的无线路由信号，选择自己能够上网的无线信息进行连接</p>
+<p><img src="/2020/04/18/router-with-raspberry-pi/scan.png" alt="OpenWrt"></p>
+<p>根据提示完成配置后，在ssh下可以通过ifconfig/ping查看联网状态</p>
+<p><img src="/2020/04/18/router-with-raspberry-pi/setting.png" alt="OpenWrt"></p>
+<h2 id="root分区扩容"><a href="#root分区扩容" class="headerlink" title="root分区扩容"></a>root分区扩容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:~# df -h</span><br><span class="line">Filesystem                Size      Used Available Use% Mounted on</span><br><span class="line">/dev/root               252.0M     14.0M    232.9M   6% /</span><br><span class="line">tmpfs                   461.6M     68.0K    461.5M   0% /tmp</span><br><span class="line">/dev/mmcblk0p1           19.9M     14.5M      5.4M  73% /boot</span><br><span class="line">tmpfs                   512.0K         0    512.0K   0% /dev</span><br></pre></td></tr></table></figure>
+<p>不管使用的tf卡容量是多大，镜像在初始化的时候都只会分配252m的根分区容量，所以需要进行分区调整</p>
+<p>不过因为文件系统正在使用，所以这个操作无法在树莓派上通过ssh完成，需要先关机后拔下tf卡，插入另一台Linux操作</p>
+<p>为了方便，可以通过VirtualBox安装一台Ubuntu的虚拟机来完成</p>
+<p>首先用<strong>fdisk</strong>命令找出读卡器的盘符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu18:~# fdisk -l</span><br><span class="line">....</span><br><span class="line">Disk /dev/sdb: 3.7 GiB, 3973054464 bytes, 7759872 sectors</span><br><span class="line"></span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line"></span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line">Disklabel type: dos</span><br><span class="line"></span><br><span class="line">Disk identifier: 0x5452574f</span><br><span class="line"></span><br><span class="line">Device     Boot Start    End Sectors  Size Id Type</span><br><span class="line"></span><br><span class="line">/dev/sdb1  *     8192  49151   40960   20M  c W95 FAT32 (LBA)</span><br><span class="line"></span><br><span class="line">/dev/sdb2       57344 581631  524288  256M 83 Linux</span><br></pre></td></tr></table></figure>
+<p>接着调整分区大小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu18:~# fdisk /dev/sdb</span><br><span class="line"></span><br><span class="line">Welcome to fdisk (util-linux 2.31.1).</span><br><span class="line">Changes will remain in memory only, until you decide to write them.</span><br><span class="line">Be careful before using the write command.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Command (m for help): p       // 查看当前磁盘分区情况</span><br><span class="line">Disk /dev/sdb: 3.7 GiB, 3973054464 bytes, 7759872 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x5452574f</span><br><span class="line"></span><br><span class="line">Device     Boot Start    End Sectors  Size Id Type</span><br><span class="line">/dev/sdb1  *     8192  49151   40960   20M  c W95 FAT32 (LBA)</span><br><span class="line">/dev/sdb2       57344 581631  524288  256M 83 Linux               // 记下这里的分区开始位置，57344</span><br><span class="line"></span><br><span class="line">Command (m for help): d // 删除分区</span><br><span class="line">Partition number (1,2, default 2): 2 // 删除第二个分区</span><br><span class="line"></span><br><span class="line">Partition 2 has been deleted.</span><br><span class="line"></span><br><span class="line">Command (m for help): n // 新建分区</span><br><span class="line">Partition type</span><br><span class="line">   p   primary (1 primary, 0 extended, 3 free)</span><br><span class="line">   e   extended (container for logical partitions)</span><br><span class="line">Select (default p): p</span><br><span class="line">Partition number (2-4, default 2): 2 // 指定分区编号</span><br><span class="line">First sector (2048-7759871, default 2048): 57344   // 指定分区开始位置，这里必须跟之前保持一致</span><br><span class="line">Last sector, +sectors or +size&#123;K,M,G,T,P&#125; (57344-7759871, default 7759871):   // 分区结束位置，默认为全部可用空间</span><br><span class="line"></span><br><span class="line">Created a new partition 2 of type &apos;Linux&apos; and of size 3.7 GiB.</span><br><span class="line">Partition #2 contains a ext4 signature.</span><br><span class="line"></span><br><span class="line">Do you want to remove the signature? [Y]es/[N]o: N         // 不修改原有签名</span><br><span class="line"></span><br><span class="line">Command (m for help): w    // 写入配置</span><br><span class="line"></span><br><span class="line">The partition table has been altered.</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
+<p>最后生效配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu18:~# e2fsck -f /dev/sdb2</span><br><span class="line">e2fsck 1.44.1 (24-Mar-2018)</span><br><span class="line">Pass 1: Checking inodes, blocks, and sizes</span><br><span class="line">Pass 2: Checking directory structure</span><br><span class="line">Pass 3: Checking directory connectivity</span><br><span class="line">Pass 4: Checking reference counts</span><br><span class="line">Pass 5: Checking group summary information</span><br><span class="line">/dev/sdb2: 1333/16384 files (0.0% non-contiguous), 4862/65536 blocks</span><br><span class="line">root@ubuntu18:~# resize2fs /dev/sdb2</span><br><span class="line">resize2fs 1.44.1 (24-Mar-2018)</span><br><span class="line">Resizing the filesystem on /dev/sdb2 to 962816 (4k) blocks.</span><br><span class="line">The filesystem on /dev/sdb2 is now 962816 (4k) blocks long.</span><br></pre></td></tr></table></figure>
+<p>然后把重新分区的存储卡再插回树莓派开机，可以发现root目前挂在的分区容量已经变成了3.6g</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/# df -h</span><br><span class="line">Filesystem                Size      Used Available Use% Mounted on</span><br><span class="line">/dev/root                 3.6G     15.3M      3.6G   0% /</span><br><span class="line">tmpfs                   461.6M     76.0K    461.5M   0% /tmp</span><br><span class="line">/dev/mmcblk0p1           19.9M     14.5M      5.4M  73% /boot</span><br><span class="line">tmpfs                   512.0K         0    512.0K   0% /dev</span><br></pre></td></tr></table></figure>
+<h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h2><p>类似与Ubuntu的apt命令，OpenWrt下的包管理命令是opkg，使用 <strong>opkg update &amp;&amp; opkg install xxx</strong> 就可以方便快捷的完成对应软件的安装了</p>
+<p>对于能够支持的软件列表可以在<a href="https://openwrt.org/docs/guide-user/services/start" target="_blank" rel="noopener">官方站点</a>进行查看</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/树莓派/" rel="tag"># 树莓派</a>
+          
+            <a href="/tags/RaspberryPi/" rel="tag"># RaspberryPi</a>
+          
+            <a href="/tags/OpenWrt/" rel="tag"># OpenWrt</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/06/safe-expose-services-by-openresty/" rel="next" title="通过OpenResty安全的暴露内网服务">
+                <i class="fa fa-chevron-left"></i> 通过OpenResty安全的暴露内网服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="chenyong">
+          <p class="site-author-name" itemprop="name">chenyong</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">104</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#镜像刷入"><span class="nav-number">2.</span> <span class="nav-text">镜像刷入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#启动配置"><span class="nav-number">3.</span> <span class="nav-text">启动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#管理员密码设置"><span class="nav-number">3.1.</span> <span class="nav-text">管理员密码设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外网连接"><span class="nav-number">3.2.</span> <span class="nav-text">外网连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#root分区扩容"><span class="nav-number">3.3.</span> <span class="nav-text">root分区扩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装"><span class="nav-number">3.4.</span> <span class="nav-text">软件安装</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenyong</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+          clientID: 'f2ec6730a6a6cd8be8b6',
+          clientSecret: '10fda469873143bf4bc57e1a8202364e15d5be85',
+          repo: 'gitalk',
+          owner: 'chenyong-info',
+          admin: ['chenyong-info'],
+          id: md5(location.pathname),
+          labels: ['Gitalk'],
+          perPage: 15,
+          pagerDirection: 'last',
+          createIssueManually: false,
+          distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')           
+    </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
