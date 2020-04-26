@@ -281,6 +281,177 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2020/04/26/quickapp-with-wechat-all-in-one/" itemprop="url">
+                  快应用平台下的微信全家桶接入指南
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-26T22:04:52+08:00">
+                2020-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/04/26/quickapp-with-wechat-all-in-one/" class="leancloud_visitors" data-flag-title="快应用平台下的微信全家桶接入指南">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>基于<a href="/2020/03/29/communication-in-quickapp-web/">之前</a>提到的快应用平台体系分裂性，甚至都没有一个统一的账号系统，如果使用厂家账号还得一家家的单独接入，并且必须先提交一个版本在联盟预审通过后才能开始厂家账号的接入调试（反正小米客服是这么说的）。</p>
+<p>为了复用微信公众号上的代码遗产，决定先接入微信账号体系，这样服务端工作量小点儿，顺带着就把微信的支付、分享也给做掉了。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>1、新建快应用工程，并使用下面命令生成发布证书</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -newkey rsa:2048 -nodes -keyout private.pem -x509 -days 3650 -out certificate.pem</span><br></pre></td></tr></table></figure>
+<p>过程中的信息可以根据自身情况随意输入，或是全部使用默认值，最后会得到2个文件：certificate.pem，private.pem</p>
+<p>将他们都拷贝至工程的 sign/release目录下，当然，为了后期调试方便，debug目录下我也拷贝了一份</p>
+<p><em>p.s. 如果说是Windows系统的话，默认没有openssl命令，可以下载<a href="http://slproweb.com/products/Win32OpenSSL.html" target="_blank" rel="noopener">Win32/Win64 OpenSSL</a>这个软件。</em></p>
+<p>2、计算得到Android应用签名（微信开放平台上使用）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS D:\quick\sign\release&gt; openssl x509 -noout -fingerprint -md5 -inform pem -in certificate.pem</span><br><span class="line">MD5 Fingerprint=81:83:4D:1F:15:25:22:A5:EB:5C:72:CD:F8:78:EC:72</span><br></pre></td></tr></table></figure>
+<p>将上面得到“81:83:4D:1F:15:25:22:A5:EB:5C:72:CD:F8:78:EC:72”去掉其中的冒号，并转换成全小写，得到：<strong>81834d1f152522a5eb5c72cdf878ec72</strong>，记住他，这就是申请微信应用时需要用到的Android签名</p>
+<p>3、获取快应用使用签名（配置在工程manifest.json文件里），这个比较简单，只需要打开第一步中生成的certificate.pem文件，可以看见如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">-----BEGIN CERTIFICATE-----</span><br><span class="line">MIIDazCCAlOgAwIBAgIUJkm6BJdPFGni+iuUwI/FAHL+AscwDQYJKoZIhvcNAQEL</span><br><span class="line">BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM</span><br><span class="line">GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDA0MjUxMjU0MjZaFw0zMDA0</span><br><span class="line">MjMxMjU0MjZaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw</span><br><span class="line">HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB</span><br><span class="line">AQUAA4IBDwAwggEKAoIBAQDggUNoltlOObtgXq4cwuRYsVq3PJ/1izR7Zp+/Cqwt</span><br><span class="line">Th68cUWPysMi01Cc2F9rcJw4drbKj/M+1DhyvVP7/dVDEAj9UDUKVsQGKlAIOBuV</span><br><span class="line">MZJIr8BEQtFUi/k7vXe8LS4Kqmh3z+S4Mfe9RPwECfsn4qdwXg0TdVs1mA67vZue</span><br><span class="line">fkZkyNMBHgdU6hthK+dIMAFzjaietPXqrotsJZMROM9QAN+qYGQtJDmgrzWz8FPr</span><br><span class="line">aQtIQk5DWmcqh9AN97QjjTDHZoPbMeVRSrsYoUkZYiWM7y0k3nfWc0xvVd5ilS2L</span><br><span class="line">N7GIjbP5A0MyZxKnceJ3WzKwPJtMEg1biOo2US1kduzdAgMBAAGjUzBRMB0GA1Ud</span><br><span class="line">DgQWBBTHW/pb1FpJw/80hQaGPRQt8XY7UjAfBgNVHSMEGDAWgBTHW/pb1FpJw/80</span><br><span class="line">hQaGPRQt8XY7UjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCU</span><br><span class="line">DYeIDFJkwmR9OTgrNXZ4AfbORSMBYDQ31o4TtIBl4po+PSUI86tDbh45tmu73xI9</span><br><span class="line">awLn+VPsgU3Q3jabyHiAvic5Q3Ge7mdYzZfLIlwTNDcr4HhnRvMvPhF3Owg6UaUl</span><br><span class="line">1E9LD5XeIvhVO51PfgOZqTSX1CpEF7uPdKk4jCa7Py7mBvvzFqzIEo0LAf6yFKf/</span><br><span class="line">zqGCH2x70uXwoTDb1Kc0CCUPmVxF5gtHbdWjP76BDPleA7cAy6ig5FOZwWzRKmUE</span><br><span class="line">jFuHs27nYFf3sdR7zjRKVrzYiqPBHJnxP5nH0zqRAyR8mD4GCg8jcpDdITZlsfeQ</span><br><span class="line">ShbFDlK+AQl6cMBaVt/f</span><br><span class="line">-----END CERTIFICATE-----</span><br></pre></td></tr></table></figure>
+<p>去掉文件的头尾，然后找一个可以在线去回车换行的网站，比如<a href="http://www.txttool.com/WenBen_StrCompress.asp" target="_blank" rel="noopener">这个</a>，可以得到最终要用在manifest.json中的签名字符串：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MIIDazCCAlOgAwIBAgIUJkm6BJdPFGni+iuUwI/FAHL+AscwDQYJKoZIhvcNAQELBQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDA0MjUxMjU0MjZaFw0zMDA0MjMxMjU0MjZaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDggUNoltlOObtgXq4cwuRYsVq3PJ/1izR7Zp+/CqwtTh68cUWPysMi01Cc2F9rcJw4drbKj/M+1DhyvVP7/dVDEAj9UDUKVsQGKlAIOBuVMZJIr8BEQtFUi/k7vXe8LS4Kqmh3z+S4Mfe9RPwECfsn4qdwXg0TdVs1mA67vZuefkZkyNMBHgdU6hthK+dIMAFzjaietPXqrotsJZMROM9QAN+qYGQtJDmgrzWz8FPraQtIQk5DWmcqh9AN97QjjTDHZoPbMeVRSrsYoUkZYiWM7y0k3nfWc0xvVd5ilS2LN7GIjbP5A0MyZxKnceJ3WzKwPJtMEg1biOo2US1kduzdAgMBAAGjUzBRMB0GA1UdDgQWBBTHW/pb1FpJw/80hQaGPRQt8XY7UjAfBgNVHSMEGDAWgBTHW/pb1FpJw/80hQaGPRQt8XY7UjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCUDYeIDFJkwmR9OTgrNXZ4AfbORSMBYDQ31o4TtIBl4po+PSUI86tDbh45tmu73xI9awLn+VPsgU3Q3jabyHiAvic5Q3Ge7mdYzZfLIlwTNDcr4HhnRvMvPhF3Owg6UaUl1E9LD5XeIvhVO51PfgOZqTSX1CpEF7uPdKk4jCa7Py7mBvvzFqzIEo0LAf6yFKf/zqGCH2x70uXwoTDb1Kc0CCUPmVxF5gtHbdWjP76BDPleA7cAy6ig5FOZwWzRKmUEjFuHs27nYFf3sdR7zjRKVrzYiqPBHJnxP5nH0zqRAyR8mD4GCg8jcpDdITZlsfeQShbFDlK+AQl6cMBaVt/f</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/04/26/quickapp-with-wechat-all-in-one/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/04/18/router-with-raspberry-pi/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1734,164 +1905,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/12/28/trends-from-gmtc-2019-shenzhen/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chenyong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="想啥侃啥">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/12/28/trends-from-gmtc-2019-shenzhen/" itemprop="url">
-                  从GMTC-2019·深圳，看前端技术趋势
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-28T14:25:56+08:00">
-                2019-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术杂谈/" itemprop="url" rel="index">
-                    <span itemprop="name">技术杂谈</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/12/28/trends-from-gmtc-2019-shenzhen/" class="leancloud_visitors" data-flag-title="从GMTC-2019·深圳，看前端技术趋势">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><img src="/2019/12/28/trends-from-gmtc-2019-shenzhen/gmtc2019.jpg" alt="gmtc2019"><br>上周末参加完<a href="https://gmtc.infoq.cn/2019/shenzhen/" target="_blank" rel="noopener">GMTC-2019·深圳站</a>，又花一周时间把大会PPT跟演讲视频初步消化了一下，信息量过于庞大，只能先做一下整体趋势目录的梳理，后续的2020年再想办法逐步在项目中实施落地。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/12/28/trends-from-gmtc-2019-shenzhen/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1939,7 +1952,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-count">47</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1961,7 +1974,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">104</span>
+                <span class="site-state-item-count">107</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

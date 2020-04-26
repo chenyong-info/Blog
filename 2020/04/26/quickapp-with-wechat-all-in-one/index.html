@@ -1,0 +1,937 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="快应用,quickapp,微信,wechat,微信登录,微信支付,微信分享,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="背景基于之前提到的快应用平台体系分裂性，甚至都没有一个统一的账号系统，如果使用厂家账号还得一家家的单独接入，并且必须先提交一个版本在联盟预审通过后才能开始厂家账号的接入调试（反正小米客服是这么说的）。 为了复用微信公众号上的代码遗产，决定先接入微信账号体系，这样服务端工作量小点儿，顺带着就把微信的支付、分享也给做掉了。 准备工作1、新建快应用工程，并使用下面命令生成发布证书 1openssl re">
+<meta name="keywords" content="快应用,quickapp,微信,wechat,微信登录,微信支付,微信分享">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快应用平台下的微信全家桶接入指南">
+<meta property="og:url" content="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/index.html">
+<meta property="og:site_name" content="想啥侃啥">
+<meta property="og:description" content="背景基于之前提到的快应用平台体系分裂性，甚至都没有一个统一的账号系统，如果使用厂家账号还得一家家的单独接入，并且必须先提交一个版本在联盟预审通过后才能开始厂家账号的接入调试（反正小米客服是这么说的）。 为了复用微信公众号上的代码遗产，决定先接入微信账号体系，这样服务端工作量小点儿，顺带着就把微信的支付、分享也给做掉了。 准备工作1、新建快应用工程，并使用下面命令生成发布证书 1openssl re">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/create-app.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/app-info.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/create-web.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/pass.png">
+<meta property="og:image" content="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/sign-check.png">
+<meta property="og:updated_time" content="2020-04-26T14:51:14.420Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="快应用平台下的微信全家桶接入指南">
+<meta name="twitter:description" content="背景基于之前提到的快应用平台体系分裂性，甚至都没有一个统一的账号系统，如果使用厂家账号还得一家家的单独接入，并且必须先提交一个版本在联盟预审通过后才能开始厂家账号的接入调试（反正小米客服是这么说的）。 为了复用微信公众号上的代码遗产，决定先接入微信账号体系，这样服务端工作量小点儿，顺带着就把微信的支付、分享也给做掉了。 准备工作1、新建快应用工程，并使用下面命令生成发布证书 1openssl re">
+<meta name="twitter:image" content="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/create-app.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/">
+
+
+
+
+
+  <title> 快应用平台下的微信全家桶接入指南 | 想啥侃啥 </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce3e67c4e2e0c9dc261a24610e82254f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">想啥侃啥</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">反正是各种乱七八糟的想法就对了</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/04/26/quickapp-with-wechat-all-in-one/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                快应用平台下的微信全家桶接入指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-26T22:04:52+08:00">
+                2020-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/04/26/quickapp-with-wechat-all-in-one/" class="leancloud_visitors" data-flag-title="快应用平台下的微信全家桶接入指南">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>基于<a href="/2020/03/29/communication-in-quickapp-web/">之前</a>提到的快应用平台体系分裂性，甚至都没有一个统一的账号系统，如果使用厂家账号还得一家家的单独接入，并且必须先提交一个版本在联盟预审通过后才能开始厂家账号的接入调试（反正小米客服是这么说的）。</p>
+<p>为了复用微信公众号上的代码遗产，决定先接入微信账号体系，这样服务端工作量小点儿，顺带着就把微信的支付、分享也给做掉了。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>1、新建快应用工程，并使用下面命令生成发布证书</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -newkey rsa:2048 -nodes -keyout private.pem -x509 -days 3650 -out certificate.pem</span><br></pre></td></tr></table></figure>
+<p>过程中的信息可以根据自身情况随意输入，或是全部使用默认值，最后会得到2个文件：certificate.pem，private.pem</p>
+<p>将他们都拷贝至工程的 sign/release目录下，当然，为了后期调试方便，debug目录下我也拷贝了一份</p>
+<p><em>p.s. 如果说是Windows系统的话，默认没有openssl命令，可以下载<a href="http://slproweb.com/products/Win32OpenSSL.html" target="_blank" rel="noopener">Win32/Win64 OpenSSL</a>这个软件。</em></p>
+<p>2、计算得到Android应用签名（微信开放平台上使用）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS D:\quick\sign\release&gt; openssl x509 -noout -fingerprint -md5 -inform pem -in certificate.pem</span><br><span class="line">MD5 Fingerprint=81:83:4D:1F:15:25:22:A5:EB:5C:72:CD:F8:78:EC:72</span><br></pre></td></tr></table></figure>
+<p>将上面得到“81:83:4D:1F:15:25:22:A5:EB:5C:72:CD:F8:78:EC:72”去掉其中的冒号，并转换成全小写，得到：<strong>81834d1f152522a5eb5c72cdf878ec72</strong>，记住他，这就是申请微信应用时需要用到的Android签名</p>
+<p>3、获取快应用使用签名（配置在工程manifest.json文件里），这个比较简单，只需要打开第一步中生成的certificate.pem文件，可以看见如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">-----BEGIN CERTIFICATE-----</span><br><span class="line">MIIDazCCAlOgAwIBAgIUJkm6BJdPFGni+iuUwI/FAHL+AscwDQYJKoZIhvcNAQEL</span><br><span class="line">BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM</span><br><span class="line">GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDA0MjUxMjU0MjZaFw0zMDA0</span><br><span class="line">MjMxMjU0MjZaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw</span><br><span class="line">HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB</span><br><span class="line">AQUAA4IBDwAwggEKAoIBAQDggUNoltlOObtgXq4cwuRYsVq3PJ/1izR7Zp+/Cqwt</span><br><span class="line">Th68cUWPysMi01Cc2F9rcJw4drbKj/M+1DhyvVP7/dVDEAj9UDUKVsQGKlAIOBuV</span><br><span class="line">MZJIr8BEQtFUi/k7vXe8LS4Kqmh3z+S4Mfe9RPwECfsn4qdwXg0TdVs1mA67vZue</span><br><span class="line">fkZkyNMBHgdU6hthK+dIMAFzjaietPXqrotsJZMROM9QAN+qYGQtJDmgrzWz8FPr</span><br><span class="line">aQtIQk5DWmcqh9AN97QjjTDHZoPbMeVRSrsYoUkZYiWM7y0k3nfWc0xvVd5ilS2L</span><br><span class="line">N7GIjbP5A0MyZxKnceJ3WzKwPJtMEg1biOo2US1kduzdAgMBAAGjUzBRMB0GA1Ud</span><br><span class="line">DgQWBBTHW/pb1FpJw/80hQaGPRQt8XY7UjAfBgNVHSMEGDAWgBTHW/pb1FpJw/80</span><br><span class="line">hQaGPRQt8XY7UjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCU</span><br><span class="line">DYeIDFJkwmR9OTgrNXZ4AfbORSMBYDQ31o4TtIBl4po+PSUI86tDbh45tmu73xI9</span><br><span class="line">awLn+VPsgU3Q3jabyHiAvic5Q3Ge7mdYzZfLIlwTNDcr4HhnRvMvPhF3Owg6UaUl</span><br><span class="line">1E9LD5XeIvhVO51PfgOZqTSX1CpEF7uPdKk4jCa7Py7mBvvzFqzIEo0LAf6yFKf/</span><br><span class="line">zqGCH2x70uXwoTDb1Kc0CCUPmVxF5gtHbdWjP76BDPleA7cAy6ig5FOZwWzRKmUE</span><br><span class="line">jFuHs27nYFf3sdR7zjRKVrzYiqPBHJnxP5nH0zqRAyR8mD4GCg8jcpDdITZlsfeQ</span><br><span class="line">ShbFDlK+AQl6cMBaVt/f</span><br><span class="line">-----END CERTIFICATE-----</span><br></pre></td></tr></table></figure>
+<p>去掉文件的头尾，然后找一个可以在线去回车换行的网站，比如<a href="http://www.txttool.com/WenBen_StrCompress.asp" target="_blank" rel="noopener">这个</a>，可以得到最终要用在manifest.json中的签名字符串：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MIIDazCCAlOgAwIBAgIUJkm6BJdPFGni+iuUwI/FAHL+AscwDQYJKoZIhvcNAQELBQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDA0MjUxMjU0MjZaFw0zMDA0MjMxMjU0MjZaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDggUNoltlOObtgXq4cwuRYsVq3PJ/1izR7Zp+/CqwtTh68cUWPysMi01Cc2F9rcJw4drbKj/M+1DhyvVP7/dVDEAj9UDUKVsQGKlAIOBuVMZJIr8BEQtFUi/k7vXe8LS4Kqmh3z+S4Mfe9RPwECfsn4qdwXg0TdVs1mA67vZuefkZkyNMBHgdU6hthK+dIMAFzjaietPXqrotsJZMROM9QAN+qYGQtJDmgrzWz8FPraQtIQk5DWmcqh9AN97QjjTDHZoPbMeVRSrsYoUkZYiWM7y0k3nfWc0xvVd5ilS2LN7GIjbP5A0MyZxKnceJ3WzKwPJtMEg1biOo2US1kduzdAgMBAAGjUzBRMB0GA1UdDgQWBBTHW/pb1FpJw/80hQaGPRQt8XY7UjAfBgNVHSMEGDAWgBTHW/pb1FpJw/80hQaGPRQt8XY7UjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCUDYeIDFJkwmR9OTgrNXZ4AfbORSMBYDQ31o4TtIBl4po+PSUI86tDbh45tmu73xI9awLn+VPsgU3Q3jabyHiAvic5Q3Ge7mdYzZfLIlwTNDcr4HhnRvMvPhF3Owg6UaUl1E9LD5XeIvhVO51PfgOZqTSX1CpEF7uPdKk4jCa7Py7mBvvzFqzIEo0LAf6yFKf/zqGCH2x70uXwoTDb1Kc0CCUPmVxF5gtHbdWjP76BDPleA7cAy6ig5FOZwWzRKmUEjFuHs27nYFf3sdR7zjRKVrzYiqPBHJnxP5nH0zqRAyR8mD4GCg8jcpDdITZlsfeQShbFDlK+AQl6cMBaVt/f</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h1 id="微信开放平台应用申请"><a href="#微信开放平台应用申请" class="headerlink" title="微信开放平台应用申请"></a>微信开放平台应用申请</h1><p>1、登录<a href="https://open.weixin.qq.com/" target="_blank" rel="noopener">微信开放平台</a>，在<strong>管理中心</strong>中创建一个移动应用</p>
+<p><img src="/2020/04/26/quickapp-with-wechat-all-in-one/create-app.png" alt="创建移动应用"></p>
+<p>2、在Android的应用签名处填上签名得到的签名值“<strong>81834d1f152522a5eb5c72cdf878ec72</strong>”，应用包名处保持跟快应用的一致（<strong>对于微信登录、支付来说，并不无包名一致的限制，但是微信分享则要求必须保持一致</strong>，这里后期在微信开放平台也可以随时修改随时生效）</p>
+<p><img src="/2020/04/26/quickapp-with-wechat-all-in-one/app-info.png" alt="填写应用信息"></p>
+<p>3、在<strong>管理中心</strong>中创建一个网站应用，这里的授权回调域填写自己的域名就可以了（其实好像也不会进行校验，并且真正的支付回调通知也不是跟这个相关）</p>
+<p><img src="/2020/04/26/quickapp-with-wechat-all-in-one/create-web.png" alt="创建网站应用"></p>
+<p>4、然后耐心的等待微信审核通过，通常都要一周多一点的样子（7个工作日），接着就可以拿到AppID跟AppSecret了</p>
+<p><img src="/2020/04/26/quickapp-with-wechat-all-in-one/pass.png" alt="应用信息"></p>
+<h1 id="微信登录对接"><a href="#微信登录对接" class="headerlink" title="微信登录对接"></a>微信登录对接</h1><p>1、首先需要修改manifest.json，添加上对应的features信息</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"service.wxaccount"</span>,</span><br><span class="line">  <span class="attr">"params"</span>: &#123; </span><br><span class="line">    <span class="attr">"appId"</span>: <span class="string">"wx1234567890abcdef"</span>,</span><br><span class="line">    <span class="attr">"package"</span>: <span class="string">"com.application.demo"</span>,</span><br><span class="line">    <span class="attr">"sign"</span>: <span class="string">"MIIDazCCAlOgAwIBAgIUJkm6BJdPFGni+iuUwI/FAHL+AscwDQYJKoZIhvcNAQELBQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDA0MjUxMjU0MjZaFw0zMDA0MjMxMjU0MjZaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDggUNoltlOObtgXq4cwuRYsVq3PJ/1izR7Zp+/CqwtTh68cUWPysMi01Cc2F9rcJw4drbKj/M+1DhyvVP7/dVDEAj9UDUKVsQGKlAIOBuVMZJIr8BEQtFUi/k7vXe8LS4Kqmh3z+S4Mfe9RPwECfsn4qdwXg0TdVs1mA67vZuefkZkyNMBHgdU6hthK+dIMAFzjaietPXqrotsJZMROM9QAN+qYGQtJDmgrzWz8FPraQtIQk5DWmcqh9AN97QjjTDHZoPbMeVRSrsYoUkZYiWM7y0k3nfWc0xvVd5ilS2LN7GIjbP5A0MyZxKnceJ3WzKwPJtMEg1biOo2US1kduzdAgMBAAGjUzBRMB0GA1UdDgQWBBTHW/pb1FpJw/80hQaGPRQt8XY7UjAfBgNVHSMEGDAWgBTHW/pb1FpJw/80hQaGPRQt8XY7UjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCUDYeIDFJkwmR9OTgrNXZ4AfbORSMBYDQ31o4TtIBl4po+PSUI86tDbh45tmu73xI9awLn+VPsgU3Q3jabyHiAvic5Q3Ge7mdYzZfLIlwTNDcr4HhnRvMvPhF3Owg6UaUl1E9LD5XeIvhVO51PfgOZqTSX1CpEF7uPdKk4jCa7Py7mBvvzFqzIEo0LAf6yFKf/zqGCH2x70uXwoTDb1Kc0CCUPmVxF5gtHbdWjP76BDPleA7cAy6ig5FOZwWzRKmUEjFuHs27nYFf3sdR7zjRKVrzYiqPBHJnxP5nH0zqRAyR8mD4GCg8jcpDdITZlsfeQShbFDlK+AQl6cMBaVt/f"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>参数说明：</em></strong><br><em><strong>appId，</strong>从微信开放平台上移动应用的值</em><br><em><strong>package，</strong>微信开放平台上填写的包名</em><br><em><strong>sign，</strong>certificate.pem文件中的内容</em></p>
+<p>2、参考快应用<a href="https://doc.quickapp.cn/features/service/wxaccount.html" target="_blank" rel="noopener">官方文档</a>，使用wxaccount.authorize接口进行拉起微信进行登录，登录成功可以得到对应的code参数</p>
+<p>3、将code参数传递给服务器，由服务器根据<a href="https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1" target="_blank" rel="noopener">微信官方文档</a>交换回来微信客户信息，然后给客户端返回登录token，至此，则微信登录完成。</p>
+<p><em>p.s. 因为之前有在微信公众号上做过微信登录信息的对接，服务器接口都可以原样复用，所以这一块的对接比较顺畅，基本没遇到什么问题。</em></p>
+<h1 id="微信支付对接"><a href="#微信支付对接" class="headerlink" title="微信支付对接"></a>微信支付对接</h1><p>1、首先也是修改manifest.json，添加上对应的features信息</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"service.wxpay"</span>,</span><br><span class="line">  <span class="attr">"params"</span>: &#123;</span><br><span class="line">    <span class="attr">"url"</span>: <span class="string">"https://demo.application.com/mweb"</span>,</span><br><span class="line">    <span class="attr">"package"</span>: <span class="string">"com.application.demo"</span>,</span><br><span class="line">    <span class="attr">"sign"</span>: <span class="string">"MIIDazCCAlOgAwIBAgIUJkm6BJdPFGni+iuUwI/FAHL+AscwDQYJKoZIhvcNAQELBQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDA0MjUxMjU0MjZaFw0zMDA0MjMxMjU0MjZaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDggUNoltlOObtgXq4cwuRYsVq3PJ/1izR7Zp+/CqwtTh68cUWPysMi01Cc2F9rcJw4drbKj/M+1DhyvVP7/dVDEAj9UDUKVsQGKlAIOBuVMZJIr8BEQtFUi/k7vXe8LS4Kqmh3z+S4Mfe9RPwECfsn4qdwXg0TdVs1mA67vZuefkZkyNMBHgdU6hthK+dIMAFzjaietPXqrotsJZMROM9QAN+qYGQtJDmgrzWz8FPraQtIQk5DWmcqh9AN97QjjTDHZoPbMeVRSrsYoUkZYiWM7y0k3nfWc0xvVd5ilS2LN7GIjbP5A0MyZxKnceJ3WzKwPJtMEg1biOo2US1kduzdAgMBAAGjUzBRMB0GA1UdDgQWBBTHW/pb1FpJw/80hQaGPRQt8XY7UjAfBgNVHSMEGDAWgBTHW/pb1FpJw/80hQaGPRQt8XY7UjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCUDYeIDFJkwmR9OTgrNXZ4AfbORSMBYDQ31o4TtIBl4po+PSUI86tDbh45tmu73xI9awLn+VPsgU3Q3jabyHiAvic5Q3Ge7mdYzZfLIlwTNDcr4HhnRvMvPhF3Owg6UaUl1E9LD5XeIvhVO51PfgOZqTSX1CpEF7uPdKk4jCa7Py7mBvvzFqzIEo0LAf6yFKf/zqGCH2x70uXwoTDb1Kc0CCUPmVxF5gtHbdWjP76BDPleA7cAy6ig5FOZwWzRKmUEjFuHs27nYFf3sdR7zjRKVrzYiqPBHJnxP5nH0zqRAyR8mD4GCg8jcpDdITZlsfeQShbFDlK+AQl6cMBaVt/f"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>参数说明：</em></strong><br><em><strong>url，</strong>快应用MWEB支付中间页，后面再做说明</em><br><em><strong>package，</strong>微信开放平台上填写的包名</em><br><em><strong>sign，</strong>certificate.pem文件中的内容</em></p>
+<p>2、参考快应用<a href="https://doc.quickapp.cn/features/service/wxpay.html" target="_blank" rel="noopener">官方文档</a>，这里有2中微信支付方式，一种是APP方式，一种是MWEB方式，并且不能选择，只能依据用户手机的情况决定哪一种是可以使用的。</p>
+<p>3、<strong>针对APP方式，</strong> 首先需要根据<a href="https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1" target="_blank" rel="noopener">微信官方文档</a>在服务端对接统一下单接口，即使抛开快应用不说，微信支付的这个下单接口也是大坑满满，总结起来有下面几个：</p>
+<p>a） <strong>trade_type参数</strong>，这里注意需要设置成APP，因为之前服务端接口对接的是JSAPI，原以为可以直接复用，结果在这里踩中了第一个大坑</p>
+<p>b）<strong>微信支付签名参数</strong>，其中JSAPI的签名参数为：<em>appId, timeStamp, nonceStr, package, signType</em>，而APP支付的签名参数则为：<em>appid, noncestr, package, partnerid, prepayid, timestamp</em>，<strong>注意大小写！！！</strong> </p>
+<p>c）<strong>如果说你一直遇到玄学的2001错误</strong>，其首先就是需要使用微信支付接口签名校验工具来校验一下生成的签名，具体使用方式参考下图：</p>
+<p><img src="/2020/04/26/quickapp-with-wechat-all-in-one/sign-check.png" alt="签名校验"></p>
+<p><strong><em>参数说明：</em></strong><br><em><strong>package，</strong> 使用固定值：“Sign=WXPay”</em><br><em><strong>appid，</strong> 微信开放平台上填写的appid</em><br><em><strong>partnerid，</strong> 微信商户号</em><br><em><strong>prepayid，</strong> 统一下单接口返回的预支付交易会话标识</em><br><em><strong>noncestr，</strong> 随机字符串</em><br><em><strong>timestamp，</strong> 时间戳</em><br><em><strong>商户key，</strong> 在微信支付上配置的加密key</em></p>
+<p><em>p.s. 基本上来说，只要这里的签名正确，微信app支付就没有什么大问题了</em></p>
+<p>4、<strong>针对MWEB方式，</strong> 还是先参考<a href="https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&amp;index=1" target="_blank" rel="noopener">微信官方的统一下单接口</a>进行服务端对接</p>
+<p>a）在服务端上MWEB比较简单，<strong>不用再关心签名的问题</strong>，只需要把统一下单接口返回的mweb_url返回给客户端就好了</p>
+<p>b）<strong>关于manifest.json中的url值</strong>，官方的说法在1040版本之前需要实现一个跳转中间页面，不需要界面，只需要单纯从url参数中解析出来mweb_url参数，然后进行跳转即可，因为手上没有1040版本的手机，所以没有进行验证，这个页面也没有实现</p>
+<p>c）<strong>关于接口中的referer字段值</strong>，填写在微信开放平台申请网站应用时填写的“授权回调域”的值就好了，比如：“<a href="https://demo.application.com/mweb”" target="_blank" rel="noopener">https://demo.application.com/mweb”</a></p>
+<p>d）<strong>统一下单接口使用的**</strong>AppID跟AppSecret**，依然使用移动应用的值，不要使用网站应用的，网站应用单纯就只有一个授权回调域有用</p>
+<h1 id="微信分享对接"><a href="#微信分享对接" class="headerlink" title="微信分享对接"></a>微信分享对接</h1><p>1、按照惯例，依然是修改manifest.json，添加上对应的features信息</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"service.share"</span>,</span><br><span class="line">  <span class="attr">"params"</span>: &#123;</span><br><span class="line">    <span class="attr">"appSign"</span>: <span class="string">"MIIDazCCAlOgAwIBAgIUJkm6BJdPFGni+iuUwI/FAHL+AscwDQYJKoZIhvcNAQELBQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDA0MjUxMjU0MjZaFw0zMDA0MjMxMjU0MjZaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDggUNoltlOObtgXq4cwuRYsVq3PJ/1izR7Zp+/CqwtTh68cUWPysMi01Cc2F9rcJw4drbKj/M+1DhyvVP7/dVDEAj9UDUKVsQGKlAIOBuVMZJIr8BEQtFUi/k7vXe8LS4Kqmh3z+S4Mfe9RPwECfsn4qdwXg0TdVs1mA67vZuefkZkyNMBHgdU6hthK+dIMAFzjaietPXqrotsJZMROM9QAN+qYGQtJDmgrzWz8FPraQtIQk5DWmcqh9AN97QjjTDHZoPbMeVRSrsYoUkZYiWM7y0k3nfWc0xvVd5ilS2LN7GIjbP5A0MyZxKnceJ3WzKwPJtMEg1biOo2US1kduzdAgMBAAGjUzBRMB0GA1UdDgQWBBTHW/pb1FpJw/80hQaGPRQt8XY7UjAfBgNVHSMEGDAWgBTHW/pb1FpJw/80hQaGPRQt8XY7UjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCUDYeIDFJkwmR9OTgrNXZ4AfbORSMBYDQ31o4TtIBl4po+PSUI86tDbh45tmu73xI9awLn+VPsgU3Q3jabyHiAvic5Q3Ge7mdYzZfLIlwTNDcr4HhnRvMvPhF3Owg6UaUl1E9LD5XeIvhVO51PfgOZqTSX1CpEF7uPdKk4jCa7Py7mBvvzFqzIEo0LAf6yFKf/zqGCH2x70uXwoTDb1Kc0CCUPmVxF5gtHbdWjP76BDPleA7cAy6ig5FOZwWzRKmUEjFuHs27nYFf3sdR7zjRKVrzYiqPBHJnxP5nH0zqRAyR8mD4GCg8jcpDdITZlsfeQShbFDlK+AQl6cMBaVt/f"</span>,</span><br><span class="line">    <span class="attr">"qqKey"</span>: <span class="string">"123456"</span>,</span><br><span class="line">    <span class="attr">"wxKey"</span>: <span class="string">"wx1234567890abcdef"</span>,</span><br><span class="line">    <span class="attr">"sinaKey"</span>: <span class="string">"123456"</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>参数说明：</em></strong><br><em><strong>appSign，</strong> certificate.pem文件中的内容</em><br><em><strong>wxKey，</strong> 从微信开放平台上移动应用的值</em><br><em><strong>其他值，</strong> 如果不使用其他分享方式可以随便填或是留空</em></p>
+<p>2、参考<a href="https://doc.quickapp.cn/features/service/share.html" target="_blank" rel="noopener">官方文档</a>调用分享接口进行分享</p>
+<p><em>p.s. 跟前面的登录、支付比起来，分享一没有服务器交互，二没有乱七八糟的前面字段算法，似乎也没什么坑可踩了。</em></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/快应用/" rel="tag"># 快应用</a>
+          
+            <a href="/tags/quickapp/" rel="tag"># quickapp</a>
+          
+            <a href="/tags/微信/" rel="tag"># 微信</a>
+          
+            <a href="/tags/wechat/" rel="tag"># wechat</a>
+          
+            <a href="/tags/微信登录/" rel="tag"># 微信登录</a>
+          
+            <a href="/tags/微信支付/" rel="tag"># 微信支付</a>
+          
+            <a href="/tags/微信分享/" rel="tag"># 微信分享</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/18/router-with-raspberry-pi/" rel="next" title="智能路由树莓派再上岗">
+                <i class="fa fa-chevron-left"></i> 智能路由树莓派再上岗
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="chenyong">
+          <p class="site-author-name" itemprop="name">chenyong</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no such thing as fate, destiny is nothing more than the sum of our own choices.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">107</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微信开放平台应用申请"><span class="nav-number">3.</span> <span class="nav-text">微信开放平台应用申请</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微信登录对接"><span class="nav-number">4.</span> <span class="nav-text">微信登录对接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微信支付对接"><span class="nav-number">5.</span> <span class="nav-text">微信支付对接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微信分享对接"><span class="nav-number">6.</span> <span class="nav-text">微信分享对接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenyong</span>
+  <div style="text-align:center;width:100%;height:50">
+  	<a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15058050号-1</a>
+	<div>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </div></div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+          clientID: 'f2ec6730a6a6cd8be8b6',
+          clientSecret: '10fda469873143bf4bc57e1a8202364e15d5be85',
+          repo: 'gitalk',
+          owner: 'chenyong-info',
+          admin: ['chenyong-info'],
+          id: md5(location.pathname),
+          labels: ['Gitalk'],
+          perPage: 15,
+          pagerDirection: 'last',
+          createIssueManually: false,
+          distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')           
+    </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("9J8sxwIkNP6etOUAUwkRRAXn-gzGzoHsz", "E102caUEr26w8qJbhi7ejOxN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
