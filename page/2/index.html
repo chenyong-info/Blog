@@ -281,6 +281,170 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想啥侃啥">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/" itemprop="url">
+                  通过Windows节点增强树莓派上的Jenkins性能
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-12T20:22:49+08:00">
+                2020-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/" class="leancloud_visitors" data-flag-title="通过Windows节点增强树莓派上的Jenkins性能">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>最近在Jenkins上编译react工程的时候老是会卡在“Creating an optimized production build…”这一步上很久，最后失败掉。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">+ yarn build</span><br><span class="line">yarn run v1.19.1</span><br><span class="line">$ react-app-rewired build</span><br><span class="line">The following changes are being made to your tsconfig.json file:</span><br><span class="line">  - compilerOptions.paths must not be set (aliased imports are not supported)</span><br><span class="line"></span><br><span class="line">Creating an optimized production build...</span><br><span class="line">error Command failed with exit code 1.</span><br><span class="line">info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.</span><br><span class="line">Process leaked file descriptors. See https://jenkins.io/redirect/troubleshooting/process-leaked-file-descriptors for more information</span><br><span class="line">Build step &apos;Execute shell&apos; marked build as failure</span><br><span class="line">SSH: Current build result is [FAILURE], not going to run.</span><br><span class="line">Finished: FAILURE</span><br></pre></td></tr></table></figure>
+<p>到控制台上查看，每次都是爆内存，除了树莓派3b的1G内存，设置在tf卡上2G的虚拟内存也占掉了4-500M，原本以为慢点儿无所谓，等就是了，这次发现是连等都不行了。</p>
+<p><img src="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/raspberry-pi-4b.png" alt="树莓派4b"></p>
+<p>一度想下手树莓派4b，不过近500¥的价格实在是不美丽，而且都需要用风扇来主动散热了，不喜欢……</p>
+<p><img src="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/blce-4000c.png" alt="技嘉 BLCE-4000C"></p>
+<p>然后看见了Intel系准系统，6W功耗的赛扬N4000，支持SATA 3.0，更便宜的价格下甩树莓派性能不要太远，恰好手上还有升级换下来的笔记本4G内存条跟120G固态硬盘，要不是因为周末客服不上班无应答，可能一冲动就真下单了。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/01/12/extend-raspberry-pi-jenkins-with-windows-node/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2020/01/03/use-docker-with-intranet/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1715,172 +1879,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blog.saubcy.com/2019/01/20/project-htmls-in-react-native/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chenyong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="想啥侃啥">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/01/20/project-htmls-in-react-native/" itemprop="url">
-                  工程化ReactNative中的页面资源
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-20T15:45:32+08:00">
-                2019-01-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">开发笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/20/project-htmls-in-react-native/" class="leancloud_visitors" data-flag-title="工程化ReactNative中的页面资源">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>&emsp;&emsp;就RN生态来说，绝大部分基础组件都能轻松找到开源实现，唯独在地图方面可选项并不多，要么是对<a href="https://github.com/react-native-community/react-native-maps" target="_blank" rel="noopener">系统地图组件的简单封装</a>、要么就是像<a href="https://github.com/mapbox/react-native-mapbox-gl" target="_blank" rel="noopener">Mapbox</a>这样使用门槛略高，反而是<a href="https://openlayers.org/" target="_blank" rel="noopener">OpenLayers</a>这样的纯js组件不仅使用简单、功能还强大。    </p>
-<p><center><img src="/2019/01/20/project-htmls-in-react-native/mapview.jpg" alt="devtools"></center><br>&emsp;&emsp;嘛…… 唯一的缺点是没有RN封装，需要借助于webview的hybird模式。</p>
-<p>&emsp;&emsp;一开始功能简单，就一个单一h5页面，什么逻辑都往里面塞，在源码目录下建个pages文件夹，iOS不用操心，打包时会自动拷贝至<strong>ios/assets</strong>目录下，Android在打包前需要手工拷贝至<strong>android/app/src/main/assets</strong>目录，然后使用WebView加载本地html文件即可：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">renderMap() &#123;</span><br><span class="line">    <span class="keyword">let</span> source = <span class="built_in">require</span>(<span class="string">'../pages/explore.html'</span>);</span><br><span class="line">    <span class="keyword">let</span> originWhitelist = [<span class="string">'*'</span>];</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">'android'</span> === Platform.OS &amp;&amp; !Global[<span class="string">'__DEV__'</span>]) &#123;</span><br><span class="line">      source = &#123; <span class="attr">uri</span>: <span class="string">'file:///android_asset/pages/explore.html'</span> &#125;;</span><br><span class="line">	  originWhitelist = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> view = <span class="literal">null</span>;</span><br><span class="line">    view =</span><br><span class="line">    &lt;WebView</span><br><span class="line">      ref=&#123;(webview) =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>.webview = webview;</span><br><span class="line">      &#125;&#125;</span><br><span class="line">      originWhitelist=&#123;originWhitelist&#125;</span><br><span class="line">      allowUniversalAccessFromFileURLs=&#123;<span class="literal">true</span>&#125;</span><br><span class="line">      source=&#123;source&#125;</span><br><span class="line">    /&gt;</span><br><span class="line">    <span class="keyword">return</span> view;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;等到代码膨胀至几千行滚轮滚着实在太累、就又拆分出来数个功能函数js，但想再继续扩展就有些力不从心了：</p>
-<ol>
-<li>只能使用ES5语法，好多ES6新特性用不上 —— 不是太清楚跟RN的打包怎么集成，也没有太多时间精力去研究；</li>
-<li>页面上第三方组件库引入麻烦；</li>
-<li>功能调试只能使用像是alert、console.log这类原始方法。</li>
-</ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/20/project-htmls-in-react-native/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1928,7 +1926,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">48</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1950,7 +1948,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">113</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
